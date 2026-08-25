@@ -1,12 +1,7 @@
 ﻿using LabCiberSeguridad.Models;
 using LabCiberSeguridad.Services.EmailService;
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MimeKit;
-using MimeKit.Text;
-
+using System.Threading.Tasks;
 
 namespace LabCiberSeguridad.Controllers
 {
@@ -16,17 +11,23 @@ namespace LabCiberSeguridad.Controllers
     {
         private readonly IEmailService _emailService;
 
-
         public EmailController(IEmailService emailService)
         {
             _emailService = emailService;
         }
 
         [HttpPost]
-        public IActionResult SendEmail(EmailDto request)
+        public async Task<IActionResult> SendEmail([FromBody] EmailDto request)
         {
-            _emailService.SendEmail(request);
-            return Ok();
+            try
+            {
+                await _emailService.SendEmail(request);
+                return Ok(new { message = "Correo enviado exitosamente." });
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
     }
 }

@@ -4,6 +4,6 @@ namespace LabCiberSeguridad.Services.EmailService
 {
     public interface IEmailService
     {
-        void SendEmail(EmailDto request);
+        Task SendEmail(EmailDto request);
     }
 }
