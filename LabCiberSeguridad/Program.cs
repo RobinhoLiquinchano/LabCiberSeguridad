@@ -1,15 +1,16 @@
 using LabCiberSeguridad.Services.EmailService;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-// Usamos WebApplicationOptions para evitar que el builder intente registrar watchers de archivos por defecto
-var options = new WebApplicationOptions
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
     Args = args,
-    ContentRootPath = Directory.GetCurrentDirectory()
-};
+    // Desactivamos la carga automática de archivos de configuración predeterminados que causan el error inotify
+});
 
-var builder = WebApplication.CreateBuilder(options);
-
-// Limpiamos cualquier fuente automática y cargamos solo lo necesario sin monitoreo de cambios
+// Limpiamos y cargamos manualmente la configuración sin monitoreo de cambios
 builder.Configuration.Sources.Clear();
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -17,7 +18,7 @@ builder.Configuration
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: false)
     .AddEnvironmentVariables();
 
-// Add services to the container.
+// Agregar servicios al contenedor
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 builder.Services.AddScoped<IEmailService, EmailService>();
@@ -26,7 +27,6 @@ var app = builder.Build();
 
 app.UseSession();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
