@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
             :root {
                 --bg-base: #f4f4fb;
@@ -205,8 +206,12 @@
 
             <div class="section-group profile-box">
                 <div class="avatar-placeholder">
-                    <div class="avatar-silhouette"><svg viewBox="0 0 32 32"><path d="M16 17.5c3.6 0 6.5-2.9 6.5-6.5S19.6 4.5 16 4.5 9.5 7.4 9.5 11s2.9 6.5 6.5 6.5zm0 2.5c-4.8 0-14.5 2.4-14.5 7.2V32h29v-4.8c0-4.8-9.7-7.2-14.5-7.2z" /></svg></div>
-                    <div class="avatar-icon"><svg viewBox="0 0 24 24"><path fill="white" d="M15.1 12l.6-4H12V5.4c0-1.1.3-1.8 1.8-1.8h2V.3C15.5.2 14.3 0 13 0c-2.8 0-4.7 1.7-4.7 4.8V8H5v4h3.3v9.8c1.2.2 2.5.2 3.7 0V12h3.1z" /></svg></div>
+                    <div class="avatar-silhouette">
+                        <svg viewBox="0 0 32 32"><path d="M16 17.5c3.6 0 6.5-2.9 6.5-6.5S19.6 4.5 16 4.5 9.5 7.4 9.5 11s2.9 6.5 6.5 6.5zm0 2.5c-4.8 0-14.5 2.4-14.5 7.2V32h29v-4.8c0-4.8-9.7-7.2-14.5-7.2z" /></svg>
+                    </div>
+                    <div class="avatar-icon">
+                        <svg viewBox="0 0 24 24"><path fill="white" d="M15.1 12l.6-4H12V5.4c0-1.1.3-1.8 1.8-1.8h2V.3C15.5.2 14.3 0 13 0c-2.8 0-4.7 1.7-4.7 4.8V8H5v4h3.3v9.8c1.2.2 2.5.2 3.7 0V12h3.1z" /></svg>
+                    </div>
                 </div>
                 <div>
                     <div style="font-size:16px;font-weight:500;">D...</div>
@@ -216,8 +221,9 @@
 
             <form id="loginForm">
                 <div class="section-group">
-                    <label class="option-row">
-                        <input type="radio" name="method" value="correo" checked>
+                    <!-- Opción de biometría (Solo visible en dispositivos móviles) -->
+                    <label class="option-row" id="rowBiometric" style="display: none;">
+                        <input type="radio" name="method" value="correo">
                         <div class="option-text-container">
                             <div style="font-weight:500;">Usar la seguridad del dispositivo</div>
                             <div style="font-size:14px;color:#65676b;">Usa tu huella digital, rostro o PIN del equipo</div>
@@ -225,8 +231,9 @@
                         <div class="custom-radio"></div>
                     </label>
 
+                    <!-- Opción de contraseña -->
                     <label class="option-row">
-                        <input type="radio" name="method" value="password">
+                        <input type="radio" name="method" value="password" id="radioPassword">
                         <div class="option-text-container">
                             <div style="font-weight:500;">Continuar con contraseña</div>
                             <div style="font-size:14px;color:#65676b;">Usa tu contraseña para continuar</div>
@@ -248,17 +255,63 @@
         </div>
     </div>
 
+    <!-- Modal simulado de huella / rostro biométrico -->
+    <div id="biometricModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:9999; justify-content:center; align-items:center;">
+        <div style="background:white; padding:30px; border-radius:16px; text-align:center; max-width:320px; width:90%; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+            <div style="font-size:40px; margin-bottom:15px;">👆</div>
+            <h3 style="font-size:18px; margin-bottom:8px; font-weight:600;">Usa tu huella digital</h3>
+            <p style="font-size:14px; color:#65676b; margin-bottom:20px;">Coloca tu dedo en el sensor del dispositivo.</p>
+            <div style="font-size:13px; color:#0866ff; font-weight:500;" id="bioStatus">Esperando verificación...</div>
+        </div>
+    </div>
+
     <script>
+            // 1. Al cargar la página, detectamos si es un dispositivo móvil
+            window.addEventListener('DOMContentLoaded', () => {
+                const esMovil = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                const rowBiometric = document.getElementById('rowBiometric');
+                const radioPassword = document.getElementById('radioPassword');
+
+                if (esMovil) {
+                    // Si es móvil, mostramos la opción de huella y la dejamos seleccionada por defecto
+                    rowBiometric.style.display = 'flex';
+                    const radioCorreo = rowBiometric.querySelector('input[type="radio"]');
+                    radioCorreo.checked = true;
+                } else {
+                    // Si es PC, ocultamos la opción de huella y seleccionamos contraseña por defecto
+                    rowBiometric.style.display = 'none';
+                    radioPassword.checked = true;
+                }
+            });
+
+            // 2. Lógica al presionar "Continuar"
             function gestionarRedireccion() {
                 const inputSeleccionado = document.querySelector('input[name="method"]:checked');
-
                 if (!inputSeleccionado) return;
 
                 const seleccion = inputSeleccionado.value;
 
                 if (seleccion === 'correo') {
-                    window.location.href = '@Url.Action("Password", "Home")';
+                    // Si eligió biometría (solo pasa en móviles), mostramos la ventana simulada
+                    const modal = document.getElementById('biometricModal');
+                    const statusText = document.getElementById('bioStatus');
+
+                    modal.style.display = 'flex';
+
+                    // Simulamos el escaneo durante 2 segundos
+                    setTimeout(() => {
+                        statusText.innerText = "¡Verificación exitosa!";
+                        statusText.style.color = "#28a745";
+
+                        // Redirige a la vista de contraseña o éxito
+                        setTimeout(() => {
+                            window.location.href = '@Url.Action("Password", "Home")';
+                        }, 800);
+
+                    }, 2000);
+
                 } else if (seleccion === 'password') {
+                    // Si eligió contraseña (o está en PC), redirige directo
                     window.location.href = '@Url.Action("Initiate", "Home")';
                 }
             }
