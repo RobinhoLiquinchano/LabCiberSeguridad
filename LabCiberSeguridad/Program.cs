@@ -3,21 +3,20 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Desactiva el monitoreo de cambios en archivos de configuración para evitar el límite de inotify en Linux
-foreach (var source in builder.Configuration.Sources)
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
-    if (source is Microsoft.Extensions.Configuration.FileConfigurationSource fileSource)
-    {
-        fileSource.ReloadOnChange = false;
-    }
-}
+    Args = args
+});
 
-
-builder.Services.AddHttpClient();
+// Desactivar monitoreo previo y reconfigurar manualmente las fuentes JSON
+builder.Configuration.Sources.Clear();
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: false)
+    .AddEnvironmentVariables();
 
 // Agregar servicios al contenedor
+builder.Services.AddHttpClient();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 

@@ -15,6 +15,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 COPY --from=build /app/publish .
 
+# EVITAR ERROR DE INOTIFY LIMIT EN LINUX / RENDER
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+
 # Configuración del puerto (ideal para Render u otros servicios en la nube)
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
