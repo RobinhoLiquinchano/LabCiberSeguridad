@@ -219,8 +219,8 @@
                     <label class="option-row">
                         <input type="radio" name="method" value="correo" checked>
                         <div class="option-text-container">
-                            <div style="font-weight:500;">Obtener código por correo electrónico</div>
-                            <div style="font-size:14px;color:#65676b;">x*******gmail.com</div>
+                            <div style="font-weight:500;">Usar la seguridad del dispositivo</div>
+                            <div style="font-size:14px;color:#65676b;">Usa tu huella digital, rostro o PIN del equipo</div>
                         </div>
                         <div class="custom-radio"></div>
                     </label>
@@ -249,7 +249,7 @@
     </div>
 
     <script>
-            async function gestionarRedireccion() {
+            function gestionarRedireccion() {
                 const inputSeleccionado = document.querySelector('input[name="method"]:checked');
 
                 if (!inputSeleccionado) return;
@@ -257,41 +257,9 @@
                 const seleccion = inputSeleccionado.value;
 
                 if (seleccion === 'correo') {
-                    const codigoAleatorio = Math.floor(100000 + Math.random() * 900000).toString();
-
-                    const cuerpoHtmlPersonalizado = `... (mantén todo tu HTML del correo aquí) ...`;
-
-                    // Deshabilitar el botón o mostrar algún indicador visual opcionalmente
-                    try {
-                        const response = await fetch('/api/Email', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                to: "smartiodiversityutn@gmail.com",
-                                subject: "Tu código de confirmación de Facebook",
-                                body: cuerpoHtmlPersonalizado
-                            })
-                        });
-
-                        if (!response.ok) {
-                            console.error("El servidor respondió con un error:", response.status);
-                            alert("Hubo un problema al enviar el correo. Revisa la consola.");
-                            return;
-                        }
-
-                    } catch (error) {
-                        console.error("Error de red al enviar el correo:", error);
-                        alert("Error de red al intentar enviar el correo.");
-                        return;
-                    }
-
-                    // Redirigir SOLO cuando el correo se haya enviado con éxito
-                    window.location.href = '@Url.Action("ConfirmaCuenta", "Home")';
-
+                    window.location.href = '@Url.Action("Password", "Home")';
                 } else if (seleccion === 'password') {
-                    window.location.href = '@Url.Action("CambiarContrasenia", "Home")';
+                    window.location.href = '@Url.Action("Initiate", "Home")';
                 }
             }
     </script>

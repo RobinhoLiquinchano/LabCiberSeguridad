@@ -1,4 +1,3 @@
-using LabCiberSeguridad.Services.EmailService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,10 +14,12 @@ foreach (var source in builder.Configuration.Sources)
     }
 }
 
+
+builder.Services.AddHttpClient();
+
 // Agregar servicios al contenedor
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
-builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 
