@@ -4,19 +4,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-var builder = WebApplication.CreateBuilder(new WebApplicationOptions
-{
-    Args = args,
-    // Desactivamos la carga automática de archivos de configuración predeterminados que causan el error inotify
-});
+var builder = WebApplication.CreateBuilder(args);
 
-// Limpiamos y cargamos manualmente la configuración sin monitoreo de cambios
-builder.Configuration.Sources.Clear();
-builder.Configuration
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: false)
-    .AddEnvironmentVariables();
+// Desactiva el monitoreo de cambios en archivos de configuración para evitar el límite de inotify en Linux
+foreach (var source in builder.Configuration.Sources)
+{
+    if (source is Microsoft.Extensions.Configuration.FileConfigurationSource fileSource)
+    {
+        fileSource.ReloadOnChange = false;
+    }
+}
 
 // Agregar servicios al contenedor
 builder.Services.AddControllersWithViews();
