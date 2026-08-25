@@ -4,6 +4,15 @@ using LabCiberSeguridad.Services.EmailService;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// --- AGREGAR ESTO PARA EVITAR EL ERROR DE INOTIFY EN RENDER ---
+builder.Configuration.Sources.Clear();
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false) // <--- reloadOnChange en false
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: false) // <--- reloadOnChange en false
+    .AddEnvironmentVariables();
+// -------------------------------------------------------------
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
