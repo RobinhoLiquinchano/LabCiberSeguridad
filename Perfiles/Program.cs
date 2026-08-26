@@ -1,41 +1,95 @@
 using Microsoft.EntityFrameworkCore;
 using Perfiles.Data;
 using Scalar.AspNetCore;
-using Supabase;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuración de Entity Framework
+// === CONFIGURACIÓN DE BASE DE DATOS INTELIGENTE ===
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreConnection")));
+{
+    var envConnection = Environment.GetEnvironmentVariable("ConnectionStrings__PostgreConnection")
+                        ?? Environment.GetEnvironmentVariable("PostgreConnection");
 
-// Configuración de Supabase
-var supabaseUrl = builder.Configuration["SupabaseSettings:Url"];
-var supabaseKey = builder.Configuration["SupabaseSettings:Key"];
+    if (!string.IsNullOrWhiteSpace(envConnection))
+    {
+        options.UseNpgsql(envConnection);
+        Console.WriteLine("Base de datos configurada mediante variable de entorno (Render)");
+    }
+    else
+    {
+        var localConnection = builder.Configuration.GetConnectionString("PostgreConnection");
 
-// Inicializamos el cliente directamente, sin las opciones adicionales
-var supabaseClient = new Supabase.Client(supabaseUrl, supabaseKey);
+        if (string.IsNullOrWhiteSpace(localConnection))
+        {
+            throw new InvalidOperationException("No se encontró ninguna cadena de conexión válida en appsettings.json ni en variables de entorno.");
+        }
 
-// Inyectamos el cliente como Singleton
-builder.Services.AddSingleton(supabaseClient);
+        options.UseNpgsql(localConnection);
+        Console.WriteLine("Base de datos configurada mediante appsettings.json (Local)");
+    }
+});
 
-// Inyectamos el cliente como Singleton
-builder.Services.AddSingleton(supabaseClient);
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
+// Configuración de CORS por si tu MVC está en otro dominio o puerto
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+// Aplicar migraciones automáticamente al arrancar (útil para Render)
+using (var scope = app.Services.CreateScope())
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference();
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Ocurrió un error al aplicar las migraciones a la base de datos.");
+    }
 }
 
+app.UseCors("AllowAll");
+
+// Configure the HTTP request pipeline.
+app.MapOpenApi();
+
+// Configuración avanzada de Scalar para Render
+app.MapScalarApiReference();
+//});
+//app.MapScalarApiReference(options =>
+//{
+//    options.Servers = new[]
+//    {
+//        new ScalarServer("https://perfiles-api.onrender.com") // <--- CAMBIA ESTA URL POR LA DE TU WEB SERVICE EN RENDER
+//    };
+//});
+
+// Redirigir la raíz "/" directamente a Scalar
+app.MapGet("/", () => Results.Redirect("/scalar/v1")).ExcludeFromDescription();
+
 app.UseHttpsRedirection();
+
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();

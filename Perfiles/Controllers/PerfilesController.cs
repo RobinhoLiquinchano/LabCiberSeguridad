@@ -10,13 +10,10 @@ namespace Perfiles.Controllers
     public class PerfilesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly Supabase.Client _supabase;
 
-        // Inyectamos el DbContext y el cliente de Supabase
-        public PerfilesController(ApplicationDbContext context, Supabase.Client supabase)
+        public PerfilesController(ApplicationDbContext context)
         {
             _context = context;
-            _supabase = supabase;
         }
 
         [HttpGet]
@@ -34,12 +31,12 @@ namespace Perfiles.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<PersonaModel>> PostPersona([FromForm] PersonaCreateDto dto)
+        public async Task<ActionResult<PersonaModel>> PostPersona([FromBody] PersonaCreateDto dto)
         {
             var persona = new PersonaModel
             {
                 Nombre = dto.Nombre,
-                FotoUrl = await GuardarImagenAsync(dto.Foto)
+                FotoUrl = dto.FotoUrl // Asignamos el link directamente
             };
 
             _context.Personas.Add(persona);
@@ -49,7 +46,7 @@ namespace Perfiles.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPersona(int id, [FromForm] PersonaUpdateDto dto)
+        public async Task<IActionResult> PutPersona(int id, [FromBody] PersonaUpdateDto dto)
         {
             if (id != dto.Id) return BadRequest();
 
@@ -57,12 +54,7 @@ namespace Perfiles.Controllers
             if (persona == null) return NotFound();
 
             persona.Nombre = dto.Nombre;
-
-            if (dto.Foto != null)
-            {
-                // Si envían una nueva foto, reemplazamos la URL
-                persona.FotoUrl = await GuardarImagenAsync(dto.Foto);
-            }
+            persona.FotoUrl = dto.FotoUrl; // Actualizamos el link directamente
 
             _context.Entry(persona).State = EntityState.Modified;
             await _context.SaveChangesAsync();
@@ -80,29 +72,6 @@ namespace Perfiles.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        // Método actualizado para subir a Supabase Storage
-        private async Task<string?> GuardarImagenAsync(IFormFile? foto)
-        {
-            if (foto == null || foto.Length == 0) return null;
-
-            // Generamos un nombre único para evitar colisiones
-            var fileName = $"{Guid.NewGuid()}_{foto.FileName}";
-
-            // Convertimos el IFormFile a un arreglo de bytes
-            using var memoryStream = new MemoryStream();
-            await foto.CopyToAsync(memoryStream);
-            var bytes = memoryStream.ToArray();
-
-            // Asegúrate de que el bucket "perfiles" exista en tu proyecto de Supabase
-            var bucket = _supabase.Storage.From("perfiles");
-
-            // Subimos el archivo
-            await bucket.Upload(bytes, fileName, new Supabase.Storage.FileOptions { Upsert = false });
-
-            // Retornamos la URL pública para guardarla en PostgreSQL
-            return bucket.GetPublicUrl(fileName);
         }
     }
 }
