@@ -30,7 +30,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Configuration
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables();
 
