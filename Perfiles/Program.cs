@@ -4,6 +4,12 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// === CONFIGURACIÓN DE CONFIGURACIÓN Y ARCHIVOS JSON ===
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
+
 // === CONFIGURACIÓN DE BASE DE DATOS INTELIGENTE ===
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -29,16 +35,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     }
 });
 
-builder.Configuration
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
-    .AddEnvironmentVariables();
-
-// Add services to the container.
+// === SERVICIOS DE LA APLICACIÓN ===
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-// Configuración de CORS por si tu MVC está en otro dominio o puerto
+// Configuración de CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -51,7 +52,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Aplicar migraciones automáticamente al arrancar (útil para Render)
+// === APLICAR MIGRACIONES AUTOMÁTICAMENTE ===
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -69,27 +70,14 @@ using (var scope = app.Services.CreateScope())
 
 app.UseCors("AllowAll");
 
-// Configure the HTTP request pipeline.
+// === CONFIGURACIÓN DEL PIPELINE HTTP ===
 app.MapOpenApi();
-
-// Configuración avanzada de Scalar para Render
 app.MapScalarApiReference();
-//});
-//app.MapScalarApiReference(options =>
-//{
-//    options.Servers = new[]
-//    {
-//        new ScalarServer("https://perfiles-api.onrender.com") // <--- CAMBIA ESTA URL POR LA DE TU WEB SERVICE EN RENDER
-//    };
-//});
 
 // Redirigir la raíz "/" directamente a Scalar
 app.MapGet("/", () => Results.Redirect("/scalar/v1")).ExcludeFromDescription();
 
-app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
