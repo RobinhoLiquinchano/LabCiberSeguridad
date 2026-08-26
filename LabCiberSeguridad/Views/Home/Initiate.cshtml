@@ -81,11 +81,6 @@
                     fill: currentColor;
                 }
 
-            .header-title {
-                font-size: clamp(24px, 3.5vw, 30px);
-                font-weight: 700;
-            }
-
             .description {
                 font-size: 15px;
                 color: var(--fb-text-desc);
@@ -156,68 +151,64 @@
                     fill: currentColor;
                 }
 
-            .profile-card {
-                width: 100%;
-                background: rgba(255,255,255,.65);
-                border: 1px solid var(--fb-border);
-                border-radius: 14px;
-                display: flex;
-                align-items: center;
-                padding: 14px 18px;
+            .section-group {
+                border: 1px solid rgba(204,208,213,.8);
+                border-radius: 12px;
                 margin-bottom: 24px;
-                gap: 14px;
-                box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+                background: rgba(255,255,255,.15);
+                backdrop-filter: blur(8px);
+                overflow: hidden;
             }
 
-            .profile-avatar-container {
-                position: relative;
-                width: 56px;
-                height: 56px;
-                flex-shrink: 0;
-            }
-
-            .profile-avatar {
-                width: 56px;
-                height: 56px;
-                border-radius: 50%;
-                object-fit: cover;
-            }
-
-            .profile-badge {
-                position: absolute;
-                bottom: 0;
-                right: 0;
-                width: 18px;
-                height: 18px;
-                background: var(--fb-blue);
-                border-radius: 50%;
+            .profile-box {
                 display: flex;
                 align-items: center;
-                justify-content: center;
-                border: 2px solid white;
+                padding: 16px;
             }
 
-                .profile-badge svg {
-                    width: 10px;
-                    height: 10px;
+            .avatar-placeholder {
+                position: relative;
+                width: 48px;
+                height: 48px;
+                margin-right: 16px;
+            }
+
+            .avatar-silhouette {
+                width: 100%;
+                height: 100%;
+                background: #d8dadf;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: flex-end;
+                overflow: hidden;
+            }
+
+                .avatar-silhouette svg {
+                    width: 44px;
+                    height: 44px;
                     fill: white;
+                    margin-bottom: -4px;
                 }
 
-            .profile-info {
+            .avatar-icon {
+                position: absolute;
+                bottom: -4px;
+                right: -4px;
+                width: 22px;
+                height: 22px;
+                background: var(--fb-blue);
+                border: 2px solid white;
+                border-radius: 50%;
                 display: flex;
-                flex-direction: column;
+                justify-content: center;
+                align-items: center;
             }
 
-            .profile-name {
-                font-size: 16px;
-                font-weight: 600;
-                color: var(--fb-text-main);
-            }
-
-            .profile-app {
-                font-size: 14px;
-                color: var(--fb-text-sec);
-            }
+                .avatar-icon svg {
+                    width: 12px;
+                    height: 12px;
+                }
 
             .btn-pill {
                 width: 100%;
@@ -366,16 +357,19 @@
             <form id="loginForm">
                 @Html.AntiForgeryToken()
 
-                <div class="profile-card">
-                    <div class="profile-avatar-container">
-                        <img src="~/logo/avatar.jpg" alt="Avatar" class="profile-avatar" onerror="this.src='https://via.placeholder.com/56'" />
-                        <div class="profile-badge">
-                            <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12c0-5.523-4.477-10-10-10z" /></svg>
+                <!-- Contenedor del avatar con la silueta SVG exacta -->
+                <div class="section-group profile-box">
+                    <div class="avatar-placeholder">
+                        <div class="avatar-silhouette">
+                            <svg viewBox="0 0 32 32"><path d="M16 17.5c3.6 0 6.5-2.9 6.5-6.5S19.6 4.5 16 4.5 9.5 7.4 9.5 11s2.9 6.5 6.5 6.5zm0 2.5c-4.8 0-14.5 2.4-14.5 7.2V32h29v-4.8c0-4.8-9.7-7.2-14.5-7.2z" /></svg>
+                        </div>
+                        <div class="avatar-icon">
+                            <svg viewBox="0 0 24 24"><path fill="white" d="M15.1 12l.6-4H12V5.4c0-1.1.3-1.8 1.8-1.8h2V.3C15.5.2 14.3 0 13 0c-2.8 0-4.7 1.7-4.7 4.8V8H5v4h3.3v9.8c1.2.2 2.5.2 3.7 0V12h3.1z" /></svg>
                         </div>
                     </div>
-                    <div class="profile-info">
-                        <span class="profile-name">Diana De la Cruz</span>
-                        <span class="profile-app">Facebook</span>
+                    <div>
+                        <div style="font-size:16px;font-weight:500;">Jenny Orbes</div>
+                        <div style="font-size:14px;color:#65676b;">Facebook</div>
                     </div>
                 </div>
 
@@ -461,7 +455,6 @@
             function iniciarSesion() {
                 const passwordInput = document.getElementById('contraseniaActual');
 
-                // Valida que el campo no esté vacío obligatoriamente antes de enviar
                 if (!passwordInput.value.trim()) {
                     passwordInput.focus();
                     return;
