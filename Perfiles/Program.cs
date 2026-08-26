@@ -72,7 +72,13 @@ app.UseCors("AllowAll");
 
 // === CONFIGURACIÓN DEL PIPELINE HTTP ===
 app.MapOpenApi();
-app.MapScalarApiReference();
+app.MapScalarApiReference(options =>
+{
+    options.Servers = new[]
+    {
+        new ScalarServer("https://labciberseguridad.onrender.com")
+    };
+});
 
 // Redirigir la raíz "/" directamente a Scalar
 app.MapGet("/", () => Results.Redirect("/scalar/v1")).ExcludeFromDescription();
