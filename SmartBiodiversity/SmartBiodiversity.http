@@ -1,0 +1,6 @@
+@SmartBiodiversity_HostAddress = http://localhost:5190
+
+GET {{SmartBiodiversity_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

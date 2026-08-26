@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="LabCiberSeguridad/LabCiberSeguridad.csproj" />
+  <Project Path="SmartBiodiversity/SmartBiodiversity.csproj" Id="7af38f9d-d89e-43b8-a076-875e969e5680" />
 </Solution>
