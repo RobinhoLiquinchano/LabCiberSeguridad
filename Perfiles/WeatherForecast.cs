@@ -1,4 +1,4 @@
-namespace SmartBiodiversity
+namespace Perfiles
 {
     public class WeatherForecast
     {

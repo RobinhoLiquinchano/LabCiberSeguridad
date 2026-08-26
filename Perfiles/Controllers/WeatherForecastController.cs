@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace SmartBiodiversity.Controllers
+namespace Perfiles.Controllers
 {
     [ApiController]
     [Route("[controller]")]
