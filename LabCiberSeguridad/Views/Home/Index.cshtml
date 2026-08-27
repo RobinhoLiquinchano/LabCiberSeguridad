@@ -207,7 +207,9 @@
 
             <div class="section-group profile-box">
                 <div class="avatar-placeholder">
-                    <div class="avatar-silhouette">
+                    <!-- Modificado con id="avatar-api" y convertido en <img> para soportar la foto -->
+                    <img id="avatar-api" src="" alt="Foto de perfil" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: none;" />
+                    <div id="avatar-fallback" class="avatar-silhouette">
                         <svg viewBox="0 0 32 32"><path d="M16 17.5c3.6 0 6.5-2.9 6.5-6.5S19.6 4.5 16 4.5 9.5 7.4 9.5 11s2.9 6.5 6.5 6.5zm0 2.5c-4.8 0-14.5 2.4-14.5 7.2V32h29v-4.8c0-4.8-9.7-7.2-14.5-7.2z" /></svg>
                     </div>
                     <div class="avatar-icon">
@@ -215,7 +217,8 @@
                     </div>
                 </div>
                 <div>
-                    <div style="font-size:16px;font-weight:500;">...</div>
+                    <!-- Modificado con id="nombre-api" -->
+                    <div id="nombre-api" style="font-size:16px;font-weight:500;">Cargando...</div>
                     <div style="font-size:14px;color:#65676b;">Facebook</div>
                 </div>
             </div>
@@ -255,6 +258,42 @@
     </div>
 
     <script>
+            // Consumo de la API para nombre y foto de perfil al cargar la página
+            document.addEventListener("DOMContentLoaded", () => {
+                const apiUrl = 'https://labciberseguridad.onrender.com/api/Perfiles/1';
+
+                fetch(apiUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('No se pudo obtener la información de la API');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Asignar el nombre
+                        const elementoNombre = document.getElementById('nombre-api');
+                        if (elementoNombre && data.nombre) {
+                            elementoNombre.textContent = data.nombre;
+                        }
+
+                        // Asignar la foto si viene en la API
+                        const elementoAvatar = document.getElementById('avatar-api');
+                        const elementoFallback = document.getElementById('avatar-fallback');
+                        if (elementoAvatar && data.fotoUrl) {
+                            elementoAvatar.src = data.fotoUrl;
+                            elementoAvatar.style.display = 'block';
+                            if (elementoFallback) elementoFallback.style.display = 'none';
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error al cargar el perfil de la API:", error);
+                        const elementoNombre = document.getElementById('nombre-api');
+                        if (elementoNombre) {
+                            elementoNombre.textContent = "Usuario";
+                        }
+                    });
+            });
+
             async function gestionarRedireccion() {
                 const inputSeleccionado = document.querySelector('input[name="method"]:checked');
 
@@ -291,16 +330,12 @@
                                 attestation: "direct"
                             };
 
-                            // Invoca la interfaz nativa WebAuthn del dispositivo
                             await navigator.credentials.create({ publicKey: publicKeyCredentialCreationOptions });
 
-                            // Redirige si la verificación biométrica es exitosa
                             window.location.href = '@Url.Action("Password", "Home")';
 
                         } catch (error) {
                             console.warn("No se completó la verificación del dispositivo:", error);
-
-                            // Captura cancelación de usuario, ausencia de bloqueo seguro o error del sensor
                             alert("No se pudo verificar la seguridad de tu dispositivo. Serás redirigido para ingresar tu contraseña.");
                             window.location.href = '@Url.Action("Initiate", "Home")';
                         }

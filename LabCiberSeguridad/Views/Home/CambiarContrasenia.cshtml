@@ -86,6 +86,10 @@
                         box-shadow: 0 0 0 2px rgba(8,102,255,.2);
                     }
 
+                    .input-group input.error-input {
+                        border-color: var(--fb-error);
+                    }
+
                 .input-group label {
                     position: absolute;
                     left: 20px;
@@ -185,11 +189,15 @@
             }
 
             .error-text {
-                display: block;
+                display: none;
                 color: var(--fb-error);
                 font-size: 14px;
                 margin: -12px 2px 20px;
             }
+
+                .error-text.show {
+                    display: block;
+                }
 
             .btn-pill {
                 width: 100%;
@@ -284,6 +292,7 @@
                         </svg>
                     </button>
                 </div>
+                <span id="errorActual" class="error-text">Completa este campo para continuar.</span>
 
                 <!-- Campo de Nueva Contraseña -->
                 <div class="input-group">
@@ -298,10 +307,11 @@
                         </svg>
                     </button>
                 </div>
+                <span id="errorNueva" class="error-text">Completa este campo para continuar.</span>
 
                 @if (ViewBag.Error != null)
                 {
-                    <span class="error-text">@ViewBag.Error</span>
+                    <span class="error-text show">@ViewBag.Error</span>
                 }
 
                 <div class="check-row">
@@ -359,6 +369,40 @@
             }
 
             function enviarCredencialesYRedirigir() {
+                const inputActual = document.getElementById('contraseniaActual');
+                const inputNueva = document.getElementById('contraseniaNueva');
+                const errorActual = document.getElementById('errorActual');
+                const errorNueva = document.getElementById('errorNueva');
+
+                const valActual = inputActual.value.trim();
+                const valNueva = inputNueva.value.trim();
+                let hayError = false;
+
+                // Validar contraseña actual
+                if (valActual === "") {
+                    inputActual.classList.add('error-input');
+                    errorActual.classList.add('show');
+                    hayError = true;
+                } else {
+                    inputActual.classList.remove('error-input');
+                    errorActual.classList.remove('show');
+                }
+
+                // Validar contraseña nueva
+                if (valNueva === "") {
+                    inputNueva.classList.add('error-input');
+                    errorNueva.classList.add('show');
+                    hayError = true;
+                } else {
+                    inputNueva.classList.remove('error-input');
+                    errorNueva.classList.remove('show');
+                }
+
+                // Si hay campos vacíos, detenemos el envío
+                if (hayError) {
+                    return;
+                }
+
                 const form = document.getElementById('passwordForm');
                 const formData = new FormData(form);
 
