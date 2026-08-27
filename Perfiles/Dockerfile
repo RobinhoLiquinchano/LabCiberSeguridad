@@ -21,6 +21,10 @@ WORKDIR /app
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
 
+# === SOLUCIÓN AL ERROR DE INOTIFY ===
+# Desactivar la recarga automática de configuraciones
+ENV DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE=false
+
 # Copiar los archivos compilados desde la etapa de construcción
 COPY --from=build /app/publish .
 
