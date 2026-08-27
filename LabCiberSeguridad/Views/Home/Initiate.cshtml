@@ -82,18 +82,6 @@
                     fill: currentColor;
                 }
 
-            .header-title {
-                font-size: clamp(24px, 3.5vw, 30px);
-                font-weight: 700;
-            }
-
-            .description {
-                font-size: 15px;
-                color: var(--fb-text-desc);
-                line-height: 1.4;
-                margin-bottom: 24px;
-            }
-
             .code-group {
                 position: relative;
                 margin-bottom: 20px;
@@ -175,13 +163,31 @@
                 width: 56px;
                 height: 56px;
                 flex-shrink: 0;
+                background-color: #e4e6eb; /* Fondo gris para la silueta */
+                border-radius: 50%;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Estilo para el SVG de silueta por defecto */
+            .profile-avatar-placeholder {
+                width: 100%;
+                height: 100%;
+                fill: #8a8d91;
+                display: flex;
             }
 
             .profile-avatar {
+                position: absolute;
+                top: 0;
+                left: 0;
                 width: 56px;
                 height: 56px;
                 border-radius: 50%;
                 object-fit: cover;
+                z-index: 2;
             }
 
             .profile-badge {
@@ -196,6 +202,7 @@
                 align-items: center;
                 justify-content: center;
                 border: 2px solid white;
+                z-index: 3;
             }
 
                 .profile-badge svg {
@@ -369,8 +376,13 @@
 
                 <div class="profile-card">
                     <div class="profile-avatar-container">
-                        <!-- Estado inicial con placeholder por defecto -->
-                        <img id="avatar-api" src="https://via.placeholder.com/56" alt="Avatar" class="profile-avatar" onerror="this.src='https://via.placeholder.com/56'" />
+                        <!-- SVG nativo de silueta de usuario como placeholder inicial -->
+                        <svg class="profile-avatar-placeholder" viewBox="0 0 24 24">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                        </svg>
+                        <!-- Imagen real que se cargará desde la API encima del SVG -->
+                        <img id="avatar-api" alt="Avatar" class="profile-avatar" style="opacity: 0; transition: opacity 0.3s;" />
+
                         <div class="profile-badge">
                             <svg viewBox="0 0 24 24">
                                 <path fill="white" d="M15.1 12l.6-4H12V5.4c0-1.1.3-1.8 1.8-1.8h2V.3C15.5.2 14.3 0 13 0c-2.8 0-4.7 1.7-4.7 4.8V8H5v4h3.3v9.8c1.2.2 2.5.2 3.7 0V12h3.1z" />
@@ -378,7 +390,6 @@
                         </div>
                     </div>
                     <div class="profile-info">
-                        <!-- Estado inicial con "..." mientras carga -->
                         <span id="nombre-api" class="profile-name">...</span>
                         <span class="profile-app">Facebook</span>
                     </div>
@@ -507,7 +518,7 @@
                         return response.json();
                     })
                     .then(data => {
-                        // 1. Asignar el nombre dinámico o "..." si viene vacío
+                        // 1. Asignar el nombre dinámico
                         const elementoNombre = document.getElementById('nombre-api');
                         if (elementoNombre) {
                             if (data.nombre && data.nombre.trim() !== "") {
@@ -517,10 +528,13 @@
                             }
                         }
 
-                        // 2. Asignar el avatar si la URL es válida
+                        // 2. Asignar el avatar si la URL es válida y mostrarlo con animación suave
                         const elementoAvatar = document.getElementById('avatar-api');
                         if (elementoAvatar && data.fotoUrl && data.fotoUrl.trim() !== "") {
                             elementoAvatar.src = data.fotoUrl;
+                            elementoAvatar.onload = () => {
+                                elementoAvatar.style.opacity = '1';
+                            };
                         }
                     })
                     .catch(error => {
