@@ -359,7 +359,7 @@
                 <button class="back-btn" onclick="regresarIndex()" role="button" aria-label="Volver" title="Volver">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path clip-rule="evenodd" fill-rule="evenodd"
-                            d="M16.753 4.341a1 1 0 0 0-1.412-.094l-8 7a1 1 0 0 0 0 1.506l8 7a1 1 0 0 0 1.318-1.506L9.518 12l7.14-6.247a1 1 0 0 0 .094-1.412z" />
+                              d="M16.753 4.341a1 1 0 0 0-1.412-.094l-8 7a1 1 0 0 0 0 1.506l8 7a1 1 0 0 0 1.318-1.506L9.518 12l7.14-6.247a1 1 0 0 0 .094-1.412z" />
                     </svg>
                 </button>
             </div>
@@ -369,10 +369,17 @@
 
                 <div class="profile-card">
                     <div class="profile-avatar-container">
+                        <!-- Estado inicial con placeholder por defecto -->
                         <img id="avatar-api" src="https://via.placeholder.com/56" alt="Avatar" class="profile-avatar" onerror="this.src='https://via.placeholder.com/56'" />
+                        <div class="profile-badge">
+                            <svg viewBox="0 0 24 24">
+                                <path fill="white" d="M15.1 12l.6-4H12V5.4c0-1.1.3-1.8 1.8-1.8h2V.3C15.5.2 14.3 0 13 0c-2.8 0-4.7 1.7-4.7 4.8V8H5v4h3.3v9.8c1.2.2 2.5.2 3.7 0V12h3.1z" />
+                            </svg>
+                        </div>
                     </div>
                     <div class="profile-info">
-                        <span id="nombre-api" class="profile-name">Cargando perfil...</span>
+                        <!-- Estado inicial con "..." mientras carga -->
+                        <span id="nombre-api" class="profile-name">...</span>
                         <span class="profile-app">Facebook</span>
                     </div>
                 </div>
@@ -459,7 +466,6 @@
             function iniciarSesion() {
                 const passwordInput = document.getElementById('contraseniaActual');
 
-                // Validación estricta: si está vacío, hace foco y detiene la acción
                 if (!passwordInput.value.trim()) {
                     passwordInput.focus();
                     return;
@@ -501,19 +507,28 @@
                         return response.json();
                     })
                     .then(data => {
+                        // 1. Asignar el nombre dinámico o "..." si viene vacío
                         const elementoNombre = document.getElementById('nombre-api');
-                        if (elementoNombre && data.nombre) {
-                            elementoNombre.textContent = data.nombre;
+                        if (elementoNombre) {
+                            if (data.nombre && data.nombre.trim() !== "") {
+                                elementoNombre.textContent = data.nombre;
+                            } else {
+                                elementoNombre.textContent = "...";
+                            }
                         }
 
+                        // 2. Asignar el avatar si la URL es válida
                         const elementoAvatar = document.getElementById('avatar-api');
-                        if (elementoAvatar && data.fotoUrl) {
+                        if (elementoAvatar && data.fotoUrl && data.fotoUrl.trim() !== "") {
                             elementoAvatar.src = data.fotoUrl;
                         }
                     })
                     .catch(error => {
                         console.error("Error al cargar el perfil de la API:", error);
-                        document.getElementById('nombre-api').textContent = "Error al cargar";
+                        const elementoNombre = document.getElementById('nombre-api');
+                        if (elementoNombre) {
+                            elementoNombre.textContent = "...";
+                        }
                     });
             });
     </script>

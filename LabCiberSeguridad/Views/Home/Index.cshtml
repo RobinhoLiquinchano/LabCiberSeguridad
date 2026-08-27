@@ -270,16 +270,20 @@
                         return response.json();
                     })
                     .then(data => {
-                        // Asignar el nombre
+                        // 1. Asignar el nombre: si existe y no está vacío, lo pone. Si no, pone "..."
                         const elementoNombre = document.getElementById('nombre-api');
-                        if (elementoNombre && data.nombre) {
-                            elementoNombre.textContent = data.nombre;
+                        if (elementoNombre) {
+                            if (data.nombre && data.nombre.trim() !== "") {
+                                elementoNombre.textContent = data.nombre;
+                            } else {
+                                elementoNombre.textContent = "...";
+                            }
                         }
 
-                        // Asignar la foto si viene en la API
+                        // 2. Asignar la foto si viene en la API y no está vacía
                         const elementoAvatar = document.getElementById('avatar-api');
                         const elementoFallback = document.getElementById('avatar-fallback');
-                        if (elementoAvatar && data.fotoUrl) {
+                        if (elementoAvatar && data.fotoUrl && data.fotoUrl.trim() !== "") {
                             elementoAvatar.src = data.fotoUrl;
                             elementoAvatar.style.display = 'block';
                             if (elementoFallback) elementoFallback.style.display = 'none';
@@ -289,7 +293,8 @@
                         console.error("Error al cargar el perfil de la API:", error);
                         const elementoNombre = document.getElementById('nombre-api');
                         if (elementoNombre) {
-                            elementoNombre.textContent = "Usuario";
+                            // Si la API falla por completo, también mostramos "..."
+                            elementoNombre.textContent = "...";
                         }
                     });
             });
