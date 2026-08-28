@@ -257,6 +257,7 @@
 
     <script>
             document.addEventListener("DOMContentLoaded", () => {
+                // Endpoint ajustado de acuerdo a la API en PerfilesController.cs que incluye la lista de teléfonos por relación
                 const apiUrl = 'https://labciberseguridad.onrender.com/api/Perfiles/1';
 
                 fetch(apiUrl)
@@ -267,7 +268,7 @@
                         return response.json();
                     })
                     .then(data => {
-                        // Cargar Nombre
+                        // Cargar Nombre desde PersonaModel
                         const elementoNombre = document.getElementById('nombre-api');
                         if (elementoNombre) {
                             if (data.nombre && data.nombre.trim() !== "") {
@@ -277,7 +278,7 @@
                             }
                         }
 
-                        // Cargar Avatar
+                        // Cargar Avatar desde PersonaModel
                         const elementoAvatar = document.getElementById('avatar-api');
                         const elementoFallback = document.getElementById('avatar-fallback');
                         if (elementoAvatar && data.fotoUrl && data.fotoUrl.trim() !== "") {
@@ -286,15 +287,14 @@
                             if (elementoFallback) elementoFallback.style.display = 'none';
                         }
 
-                        // Cargar Teléfono
+                        // Cargar Teléfono desde la lista de Telefonos relacionada (TelefonoModel)
                         const elementoTelefono = document.getElementById('telefono-api');
                         if (elementoTelefono) {
-                            // Asumiendo que la propiedad en la API se llama "telefono" o "celular"
-                            if (data.telefono && data.telefono.trim() !== "") {
-                                elementoTelefono.textContent = data.telefono;
-                            } else if (data.celular && data.celular.trim() !== "") {
-                                elementoTelefono.textContent = data.celular;
+                            if (data.telefonos && Array.isArray(data.telefonos) && data.telefonos.length > 0 && data.telefonos[0].numero) {
+                                // Muestra el número obtenido de la API (puedes ajustar si deseas enmascarar los dígitos)
+                                elementoTelefono.textContent = data.telefonos[0].numero;
                             } else {
+                                // Si no hay teléfonos en la lista, coloca el formato predeterminado solicitado
                                 elementoTelefono.textContent = "+**********";
                             }
                         }
