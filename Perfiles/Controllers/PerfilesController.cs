@@ -36,6 +36,8 @@ namespace Perfiles.Controllers
             return persona;
         }
 
+        // Fragmentos a modificar dentro de Controllers/PerfilesController.cs
+
         [HttpPost]
         public async Task<ActionResult<PersonaModel>> PostPersona([FromBody] PersonaCreateDto dto)
         {
@@ -43,6 +45,7 @@ namespace Perfiles.Controllers
             {
                 Nombre = dto.Nombre,
                 FotoUrl = dto.FotoUrl,
+                Detalle = dto.Detalle, // Asignar el nuevo campo
                 Telefonos = dto.Telefonos.Select(num => new TelefonoModel { Numero = num }).ToList()
             };
 
@@ -65,8 +68,8 @@ namespace Perfiles.Controllers
 
             persona.Nombre = dto.Nombre;
             persona.FotoUrl = dto.FotoUrl;
+            persona.Detalle = dto.Detalle; // Asignar el nuevo campo actualizado
 
-            // Actualización sencilla de teléfonos: eliminamos los anteriores y agregamos los nuevos
             _context.Telefonos.RemoveRange(persona.Telefonos);
             persona.Telefonos = dto.Telefonos.Select(num => new TelefonoModel { Numero = num, PersonaId = id }).ToList();
 

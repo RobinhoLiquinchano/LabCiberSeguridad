@@ -18,7 +18,10 @@ namespace Perfiles.Models
         [Column("foto_url")]
         public string? FotoUrl { get; set; }
 
-        // Relación de uno a muchos para los teléfonos
+        // Nuevo campo agregado
+        [Column("detalle")]
+        public string? Detalle { get; set; }
+
         public List<TelefonoModel> Telefonos { get; set; } = new();
     }
 
@@ -30,7 +33,7 @@ namespace Perfiles.Models
 
         [Required]
         [Column("numero")]
-        [MaxLength(20)]
+        [MaxLength(20)] // La longitud del campo teléfono ya está limitada a 20 aquí
         public string Numero { get; set; } = string.Empty;
 
         [Column("persona_id")]
