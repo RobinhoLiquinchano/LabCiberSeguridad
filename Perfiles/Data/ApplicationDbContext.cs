@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore; // 1. Asegúrate de tener este using
+﻿// Data/ApplicationDbContext.cs
+using Microsoft.EntityFrameworkCore;
 using Perfiles.Models;
 
 namespace Perfiles.Data
 {
-    // 2. Agrega ": DbContext" aquí
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
@@ -11,5 +11,6 @@ namespace Perfiles.Data
         }
 
         public DbSet<PersonaModel> Personas { get; set; }
+        public DbSet<TelefonoModel> Telefonos { get; set; } // Nuevo DbSet
     }
 }

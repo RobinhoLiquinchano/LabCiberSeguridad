@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿// Models/PersonaModel.cs
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Perfiles.Models
@@ -16,5 +17,23 @@ namespace Perfiles.Models
 
         [Column("foto_url")]
         public string? FotoUrl { get; set; }
+
+        // Relación de uno a muchos para los teléfonos
+        public List<TelefonoModel> Telefonos { get; set; } = new();
+    }
+
+    public class TelefonoModel
+    {
+        [Key]
+        [Column("id")]
+        public int Id { get; set; }
+
+        [Required]
+        [Column("numero")]
+        [MaxLength(20)]
+        public string Numero { get; set; } = string.Empty;
+
+        [Column("persona_id")]
+        public int PersonaId { get; set; }
     }
 }

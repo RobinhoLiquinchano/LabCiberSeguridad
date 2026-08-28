@@ -16,16 +16,22 @@ namespace Perfiles.Controllers
             _context = context;
         }
 
+        // Controllers/PerfilesController.cs
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PersonaModel>>> GetPersonas()
         {
-            return await _context.Personas.ToListAsync();
+            return await _context.Personas
+                .Include(p => p.Telefonos) // Trae los teléfonos relacionados
+                .ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<PersonaModel>> GetPersona(int id)
         {
-            var persona = await _context.Personas.FindAsync(id);
+            var persona = await _context.Personas
+                .Include(p => p.Telefonos)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (persona == null) return NotFound();
             return persona;
         }
@@ -36,7 +42,8 @@ namespace Perfiles.Controllers
             var persona = new PersonaModel
             {
                 Nombre = dto.Nombre,
-                FotoUrl = dto.FotoUrl // Asignamos el link directamente
+                FotoUrl = dto.FotoUrl,
+                Telefonos = dto.Telefonos.Select(num => new TelefonoModel { Numero = num }).ToList()
             };
 
             _context.Personas.Add(persona);
@@ -50,13 +57,19 @@ namespace Perfiles.Controllers
         {
             if (id != dto.Id) return BadRequest();
 
-            var persona = await _context.Personas.FindAsync(id);
+            var persona = await _context.Personas
+                .Include(p => p.Telefonos)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (persona == null) return NotFound();
 
             persona.Nombre = dto.Nombre;
-            persona.FotoUrl = dto.FotoUrl; // Actualizamos el link directamente
+            persona.FotoUrl = dto.FotoUrl;
 
-            _context.Entry(persona).State = EntityState.Modified;
+            // Actualización sencilla de teléfonos: eliminamos los anteriores y agregamos los nuevos
+            _context.Telefonos.RemoveRange(persona.Telefonos);
+            persona.Telefonos = dto.Telefonos.Select(num => new TelefonoModel { Numero = num, PersonaId = id }).ToList();
+
             await _context.SaveChangesAsync();
 
             return NoContent();
