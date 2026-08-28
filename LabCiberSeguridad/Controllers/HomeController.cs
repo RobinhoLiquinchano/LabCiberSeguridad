@@ -32,6 +32,11 @@ namespace LabCiberSeguridad.Controllers
             // Aquí puedes agregar lógica si lo necesitas antes de mostrar la vista
             return View();
         }
+        public IActionResult ConfirmaSMS()
+        {
+            // Aquí puedes agregar lógica si lo necesitas antes de mostrar la vista
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
